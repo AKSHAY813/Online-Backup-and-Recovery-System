@@ -35,13 +35,6 @@ interface BackupItem {
   versions: number;
 }
 
-interface RecoveryPoint {
-  id: string;
-  date: string;
-  size: string;
-  type: 'full' | 'incremental';
-  status: 'available' | 'restoring';
-}
 
 const DEFAULT_SETTINGS: UserSettings = {
   encryption: true,
@@ -200,13 +193,39 @@ class MockApiService {
     };
   }
 
-  async getRecoveryPoints(): Promise<RecoveryPoint[]> {
+  async createBackup(name: string, size: number): Promise<BackupItem> {
     await this.wait();
     const email = localStorage.getItem(AUTH_KEY);
     if (!email) throw new Error('Not authenticated');
 
-    const recoveryRaw = localStorage.getItem(this.getUserDataKey(email, 'recovery'));
-    return recoveryRaw ? JSON.parse(recoveryRaw) : [];
+    const backupsRaw = localStorage.getItem(this.getUserDataKey(email, 'backups'));
+    const backups: BackupItem[] = backupsRaw ? JSON.parse(backupsRaw) : [];
+
+    const statsRaw = localStorage.getItem(this.getUserDataKey(email, 'stats'));
+    const stats: StorageStats = statsRaw ? JSON.parse(statsRaw) : INITIAL_STATS;
+
+    const sizeGB = size / (1024 * 1024 * 1024);
+    
+    const newBackup: BackupItem = {
+      id: Math.random().toString(36).substring(7),
+      name,
+      type: name.includes('.') ? 'file' : 'folder',
+      size: sizeGB < 0.01 ? (size / (1024 * 1024)).toFixed(2) + ' MB' : sizeGB.toFixed(2) + ' GB',
+      lastBackup: new Date().toISOString(),
+      status: 'completed',
+      versions: 1
+    };
+
+    backups.unshift(newBackup);
+    localStorage.setItem(this.getUserDataKey(email, 'backups'), JSON.stringify(backups));
+
+    // Update stats
+    stats.used = parseFloat((stats.used + sizeGB).toFixed(2));
+    stats.backupCount += 1;
+    stats.lastBackup = new Date().toLocaleString();
+    localStorage.setItem(this.getUserDataKey(email, 'stats'), JSON.stringify(stats));
+
+    return newBackup;
   }
 }
 

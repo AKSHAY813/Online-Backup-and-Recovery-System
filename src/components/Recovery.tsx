@@ -1,56 +1,17 @@
-import { useState, useEffect } from 'react';
-import type { RecoveryPoint } from '@/types';
-import { mockApi } from '@/services/mockApi';
+import { useState } from 'react';
 
 const recoveryFiles = [
-  { id: '1', name: 'Documents', type: 'folder', path: '/Documents', size: '2.3 GB' },
-  { id: '2', name: 'Photos', type: 'folder', path: '/Photos', size: '15.8 GB' },
-  { id: '3', name: 'Projects', type: 'folder', path: '/Projects', size: '4.1 GB' },
-  { id: '4', name: 'database.sql', type: 'file', path: '/database.sql', size: '1.8 GB' },
-  { id: '5', name: 'config.json', type: 'file', path: '/config.json', size: '12 KB' },
+  { id: '1', name: 'Design_Final.fig', type: 'figma', size: '25.4 MB', date: 'Mar 12, 2024' },
+  { id: '2', name: 'Presentation.pdf', type: 'pdf', size: '12.8 MB', date: 'Mar 11, 2024' },
+  { id: '3', name: 'Project_Assets.zip', type: 'archive', size: '480 MB', date: 'Mar 10, 2024' },
+  { id: '4', name: 'Profile_Photo.png', type: 'image', size: '2.4 MB', date: 'Mar 09, 2024' },
+  { id: '5', name: 'Dashboard_Mockup.png', type: 'image', size: '3.8 MB', date: 'Mar 09, 2024' },
+  { id: '6', name: 'Annual_Report.docx', type: 'doc', size: '1.2 MB', date: 'Mar 08, 2024' },
 ];
 
-type RecoveryMode = 'file' | 'system' | 'point-in-time';
-
 export function Recovery() {
-  const [recoveryPoints, setRecoveryPoints] = useState<RecoveryPoint[]>([]);
-  const [selectedPoint, setSelectedPoint] = useState<string | null>(null);
-  const [recoveryMode, setRecoveryMode] = useState<RecoveryMode>('file');
-  const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
-  const [isRestoring, setIsRestoring] = useState(false);
-  const [restoreProgress, setRestoreProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadRecoveryPoints = async () => {
-      try {
-        const points = await mockApi.getRecoveryPoints();
-        setRecoveryPoints(points);
-      } catch (error) {
-        console.error('Failed to load recovery points:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadRecoveryPoints();
-  }, []);
-
-  const handleRestore = () => {
-    setIsRestoring(true);
-    const interval = setInterval(() => {
-      setRestoreProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsRestoring(false);
-            setRestoreProgress(0);
-          }, 1500);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 200);
-  };
+  const [selectedFiles, setSelectedFiles] = useState<string[]>(['1', '2']);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleFileSelection = (id: string) => {
     setSelectedFiles(prev => 
@@ -58,272 +19,144 @@ export function Recovery() {
     );
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold text-slate-800">Data Recovery</h2>
-        <p className="text-slate-500">Restore your files from backup points</p>
-      </div>
-
-      {/* Recovery Mode Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <button
-          onClick={() => setRecoveryMode('file')}
-          className={`p-6 rounded-2xl border-2 transition-all text-left ${
-            recoveryMode === 'file' 
-              ? 'border-cyan-500 bg-cyan-50' 
-              : 'border-slate-200 bg-white hover:border-slate-300'
-          }`}
-        >
-          <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${
-            recoveryMode === 'file' ? 'bg-cyan-500' : 'bg-slate-100'
-          }`}>
-            <svg className={`w-6 h-6 ${recoveryMode === 'file' ? 'text-white' : 'text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <h3 className={`font-semibold mb-1 ${recoveryMode === 'file' ? 'text-cyan-700' : 'text-slate-800'}`}>File Restore</h3>
-          <p className="text-sm text-slate-500">Recover specific files or folders</p>
-        </button>
-
-        <button
-          onClick={() => setRecoveryMode('system')}
-          className={`p-6 rounded-2xl border-2 transition-all text-left ${
-            recoveryMode === 'system' 
-              ? 'border-cyan-500 bg-cyan-50' 
-              : 'border-slate-200 bg-white hover:border-slate-300'
-          }`}
-        >
-          <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${
-            recoveryMode === 'system' ? 'bg-cyan-500' : 'bg-slate-100'
-          }`}>
-            <svg className={`w-6 h-6 ${recoveryMode === 'system' ? 'text-white' : 'text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-            </svg>
-          </div>
-          <h3 className={`font-semibold mb-1 ${recoveryMode === 'system' ? 'text-cyan-700' : 'text-slate-800'}`}>System Restore</h3>
-          <p className="text-sm text-slate-500">Full system image recovery</p>
-        </button>
-
-        <button
-          onClick={() => setRecoveryMode('point-in-time')}
-          className={`p-6 rounded-2xl border-2 transition-all text-left ${
-            recoveryMode === 'point-in-time' 
-              ? 'border-cyan-500 bg-cyan-50' 
-              : 'border-slate-200 bg-white hover:border-slate-300'
-          }`}
-        >
-          <div className={`w-12 h-12 rounded-xl mb-4 flex items-center justify-center ${
-            recoveryMode === 'point-in-time' ? 'bg-cyan-500' : 'bg-slate-100'
-          }`}>
-            <svg className={`w-6 h-6 ${recoveryMode === 'point-in-time' ? 'text-white' : 'text-slate-500'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h3 className={`font-semibold mb-1 ${recoveryMode === 'point-in-time' ? 'text-cyan-700' : 'text-slate-800'}`}>Point-in-Time</h3>
-          <p className="text-sm text-slate-500">Restore from specific version</p>
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recovery Points */}
-        <div className="lg:col-span-1 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-6 border-b border-slate-100">
-            <h3 className="text-lg font-semibold text-slate-800">Recovery Points</h3>
-            <p className="text-sm text-slate-500 mt-1">Select a backup version</p>
-          </div>
-          <div className="p-4 max-h-96 overflow-y-auto">
-            {recoveryPoints.length > 0 ? (
-              <div className="space-y-2">
-                {recoveryPoints.map((point) => (
-                  <button
-                    key={point.id}
-                    onClick={() => setSelectedPoint(point.id)}
-                    className={`w-full p-4 rounded-xl text-left transition-all ${
-                      selectedPoint === point.id 
-                        ? 'bg-cyan-50 border-2 border-cyan-500' 
-                        : 'bg-slate-50 border-2 border-transparent hover:bg-slate-100'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                        point.type === 'full' 
-                          ? 'bg-purple-100 text-purple-700' 
-                          : 'bg-blue-100 text-blue-700'
-                      }`}>
-                        {point.type}
-                      </span>
-                      <span className="text-xs text-slate-400">{point.size}</span>
-                    </div>
-                    <p className="font-medium text-slate-800">{point.date}</p>
-                  </button>
-                ))}
+    <div className="space-y-12 animate-slide-up pb-32">
+      <div className="px-2">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+           <div>
+              <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-none mb-4">Encrypted<br /><span className="text-blue-600">Assets.</span></h1>
+              <p className="text-slate-400 font-bold text-sm uppercase tracking-[0.2em]">Verified Shards in Local Node</p>
+           </div>
+           <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-3xl border border-slate-100 shadow-sm">
+              <button className="px-6 py-3 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest shadow-sm ring-1 ring-slate-100">All Files</button>
+              <button className="px-6 py-3 text-slate-400 hover:text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-colors">Shared</button>
+              <button className="px-6 py-3 text-slate-400 hover:text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-colors">Trash</button>
+           </div>
+        </div>
+        
+        {/* Search Bar */}
+        <div className="relative mb-12 group">
+           <div className="absolute inset-0 bg-blue-600/5 blur-2xl rounded-[3rem] group-focus-within:bg-blue-600/10 transition-colors"></div>
+           <div className="relative flex items-center bg-white border border-slate-200 rounded-[2.5rem] px-8 h-20 shadow-premium focus-within:ring-4 focus-within:ring-blue-100/50 focus-within:border-blue-400 transition-all">
+              <svg className="w-6 h-6 text-slate-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input 
+                 type="text"
+                 placeholder="Search your distributed vault for shards, files, or nodes..."
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 className="w-full bg-transparent border-none outline-none ml-6 text-lg text-slate-700 placeholder:text-slate-300 font-bold"
+              />
+              <div className="hidden md:flex items-center gap-2">
+                 <kbd className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-400">⌘</kbd>
+                 <kbd className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-[10px] font-black text-slate-400">K</kbd>
               </div>
-            ) : (
-              <div className="p-8 text-center">
-                <p className="text-slate-400 text-sm italic">No recovery points available yet</p>
-              </div>
-            )}
-          </div>
+           </div>
         </div>
 
-        {/* File Browser / Recovery Options */}
-        <div className="lg:col-span-2 space-y-6">
-          {recoveryMode === 'file' && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="p-6 border-b border-slate-100">
-                <h3 className="text-lg font-semibold text-slate-800">Select Files to Restore</h3>
-              </div>
-              <div className="p-4">
-                <div className="space-y-2">
-                  {recoveryFiles.map((file) => (
-                    <div
-                      key={file.id}
-                      onClick={() => toggleFileSelection(file.id)}
-                      className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
-                        selectedFiles.includes(file.id) 
-                          ? 'bg-cyan-50 border border-cyan-200' 
-                          : 'bg-slate-50 border border-transparent hover:bg-slate-100'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedFiles.includes(file.id)}
-                        onChange={() => toggleFileSelection(file.id)}
-                        className="w-5 h-5 rounded border-slate-300 text-cyan-600 focus:ring-cyan-500"
-                      />
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        file.type === 'folder' ? 'bg-yellow-100' : 'bg-blue-100'
-                      }`}>
-                        {file.type === 'folder' ? (
-                          <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
-                          </svg>
-                        ) : (
-                          <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-slate-800">{file.name}</p>
-                        <p className="text-sm text-slate-500">{file.path}</p>
-                      </div>
-                      <span className="text-sm text-slate-400">{file.size}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
+        <div className="flex items-center justify-between mb-8 px-6">
+           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">Total Index: {recoveryFiles.length} Nodes</p>
+           <div className="flex items-center gap-4">
+              <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.3em]">{selectedFiles.length} Shards Targetted</span>
+              <div className="w-px h-4 bg-slate-200"></div>
+              <button className="text-slate-400 hover:text-blue-600 font-black text-[10px] uppercase tracking-[0.3em] transition-colors">Select All</button>
+           </div>
+        </div>
 
-          {recoveryMode === 'system' && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-              <div className="text-center py-8">
-                <div className="w-20 h-20 bg-purple-100 rounded-2xl mx-auto mb-6 flex items-center justify-center">
-                  <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
-                  </svg>
+        {/* File List Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+           {recoveryFiles.map((file) => (
+             <div 
+                key={file.id} 
+                onClick={() => toggleFileSelection(file.id)}
+                className={`sentinel-card p-8 flex flex-col justify-between cursor-pointer group transition-all duration-500 ${
+                   selectedFiles.includes(file.id) ? 'ring-4 ring-blue-500/10 border-blue-500 bg-blue-50/20' : 'bg-white'
+                }`}
+             >
+                <div className="flex items-start justify-between mb-8">
+                   <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 ${
+                      file.type === 'image' ? 'bg-rose-50 text-rose-500' :
+                      file.type === 'pdf' ? 'bg-orange-50 text-orange-500' :
+                      file.type === 'figma' ? 'bg-purple-50 text-purple-500' : 'bg-blue-50 text-blue-600'
+                   }`}>
+                      {file.type === 'image' && (
+                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                           <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      {(file.type === 'pdf' || file.type === 'doc') && (
+                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                           <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                        </svg>
+                      )}
+                      {file.type === 'figma' && (
+                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M8.5 11c1.933 0 3.5-1.567 3.5-3.5S10.433 4 8.5 4 5 5.567 5 7.5 6.567 11 8.5 11zM15.5 11c1.933 0 3.5-1.567 3.5-3.5S17.433 4 15.5 4 12 5.567 12 7.5s1.567 3.5 3.5 3.5zM8.5 18c1.933 0 3.5-1.567 3.5-3.5 0-1.933-1.567-3.5-3.5-3.5S5 12.567 5 14.5 6.567 18 8.5 18zM15.5 18c1.933 0 3.5-1.567 3.5-3.5 0-1.933-1.567-3.5-3.5-3.5S12 12.567 12 14.5s1.567 3.5 3.5 3.5zM8.5 24c1.933 0 3.5-1.567 3.5-3.5S10.433 17 8.5 17 5 18.567 5 20.5 6.567 24 8.5 24z" />
+                         </svg>
+                      )}
+                      {file.type === 'archive' && (
+                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                         </svg>
+                      )}
+                   </div>
+                   <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${
+                      selectedFiles.includes(file.id) ? 'bg-blue-600 border-blue-600 shadow-lg shadow-blue-500/40' : 'border-slate-100 bg-white group-hover:border-slate-300'
+                   }`}>
+                      {selectedFiles.includes(file.id) && (
+                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                         </svg>
+                      )}
+                   </div>
                 </div>
-                <h3 className="text-xl font-semibold text-slate-800 mb-2">Full System Restore</h3>
-                <p className="text-slate-500 mb-6 max-w-md mx-auto">
-                  This will restore your entire system image including OS, applications, and all data to the selected recovery point.
-                </p>
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 max-w-md mx-auto">
-                  <div className="flex items-start gap-3">
-                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                    </svg>
-                    <p className="text-sm text-amber-800 text-left">
-                      Warning: This operation will overwrite all current data on the target device.
-                    </p>
-                  </div>
+                <div>
+                   <p className="font-black text-slate-900 text-xl tracking-tight mb-2 group-hover:text-blue-600 transition-colors uppercase truncate">{file.name}</p>
+                   <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{file.size}</span>
+                      <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{file.date}</span>
+                   </div>
                 </div>
-              </div>
-            </div>
-          )}
+             </div>
+           ))}
+        </div>
+      </div>
 
-          {recoveryMode === 'point-in-time' && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-              <h3 className="text-lg font-semibold text-slate-800 mb-4">Version History</h3>
-              <p className="text-slate-500 mb-6">
-                Browse through different versions of your files and restore any previous state.
-              </p>
-              <div className="relative">
-                <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200"></div>
-                <div className="space-y-4">
-                  {recoveryPoints.length > 0 ? recoveryPoints.slice(0, 4).map((point, index) => (
-                    <div key={point.id} className="relative pl-10">
-                      <div className={`absolute left-2 w-5 h-5 rounded-full border-2 ${
-                        index === 0 ? 'bg-cyan-500 border-cyan-500' : 'bg-white border-slate-300'
-                      }`}>
-                        {index === 0 && (
-                          <svg className="w-3 h-3 text-white absolute top-0.5 left-0.5" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        )}
-                      </div>
-                      <div className="bg-slate-50 rounded-xl p-4">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium text-slate-800">{point.date}</span>
-                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                            point.type === 'full' 
-                              ? 'bg-purple-100 text-purple-700' 
-                              : 'bg-blue-100 text-blue-700'
-                          }`}>
-                            {point.type}
-                          </span>
+      {/* Floating Action Bar */}
+      {selectedFiles.length > 0 && (
+         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-6">
+            <div className="glass-dark rounded-[2.5rem] p-4 flex items-center justify-between shadow-2xl shadow-blue-900/40 border border-white/10 animate-in slide-in-from-bottom-10 duration-700">
+               <div className="flex items-center gap-6 px-4">
+                  <div className="flex -space-x-3">
+                     {[1, 2, 3].map(i => (
+                        <div key={i} className="w-10 h-10 rounded-2xl bg-blue-600 border-2 border-[#0F172A] flex items-center justify-center text-white text-[10px] font-black">
+                           {i}
                         </div>
-                        <p className="text-sm text-slate-500">Backup size: {point.size}</p>
-                      </div>
-                    </div>
-                  )) : (
-                    <p className="text-sm text-slate-400 italic ml-10">No history available</p>
-                  )}
-                </div>
-              </div>
+                     ))}
+                  </div>
+                  <div>
+                     <p className="text-white font-black text-sm tracking-tight leading-none mb-1.5">{selectedFiles.length} Shards Targetted</p>
+                     <p className="text-blue-400 font-bold text-[10px] uppercase tracking-widest">Awaiting Batch Uplink</p>
+                  </div>
+               </div>
+               <div className="flex items-center gap-3">
+                  <button className="p-4 text-slate-400 hover:text-white transition-colors">
+                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                     </svg>
+                  </button>
+                  <button className="flex items-center gap-4 px-8 py-5 bg-blue-600 text-white rounded-[1.75rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:bg-blue-500 hover:scale-[1.02] active:scale-95 transition-all group">
+                     Deploy Shards
+                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                     </svg>
+                  </button>
+               </div>
             </div>
-          )}
-
-          {/* Restore Progress */}
-          {isRestoring && (
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-medium text-slate-700">Restoring Data...</span>
-                <span className="text-sm text-slate-500">{restoreProgress}%</span>
-              </div>
-              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-green-400 to-emerald-500 rounded-full transition-all duration-300"
-                  style={{ width: `${restoreProgress}%` }}
-                />
-              </div>
-              <p className="text-sm text-slate-500 mt-2">Decrypting and downloading files...</p>
-            </div>
-          )}
-
-          {/* Restore Button */}
-          <button
-            onClick={handleRestore}
-            disabled={isRestoring || (!selectedPoint && recoveryMode !== 'file') || (recoveryMode === 'file' && selectedFiles.length === 0)}
-            className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-            </svg>
-            {isRestoring ? 'Restoring...' : 'Start Recovery'}
-          </button>
-        </div>
-      </div>
+         </div>
+      )}
     </div>
   );
 }

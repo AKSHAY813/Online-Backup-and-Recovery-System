@@ -33,7 +33,7 @@ export function Schedule() {
         id: Date.now().toString(),
         ...newSchedule,
         enabled: true,
-        nextRun: 'Calculating...',
+        nextRun: 'Next cycle pending',
       }]);
       setNewSchedule({ name: '', frequency: 'daily', time: '08:00' });
       setShowNewSchedule(false);
@@ -42,184 +42,177 @@ export function Schedule() {
 
   const frequencyIcons: Record<string, React.ReactNode> = {
     hourly: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
     daily: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
     ),
     weekly: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
       </svg>
     ),
     monthly: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
     ),
   };
 
   const frequencyColors: Record<string, string> = {
-    hourly: 'bg-orange-100 text-orange-600',
-    daily: 'bg-blue-100 text-blue-600',
-    weekly: 'bg-purple-100 text-purple-600',
-    monthly: 'bg-green-100 text-green-600',
+    hourly: 'bg-orange-600 shadow-orange-500/20',
+    daily: 'bg-blue-600 shadow-blue-500/20',
+    weekly: 'bg-indigo-600 shadow-indigo-500/20',
+    monthly: 'bg-emerald-600 shadow-emerald-500/20',
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-12 animate-slide-up font-['Outfit'] pb-20">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">Backup Schedules</h2>
-          <p className="text-slate-500">Automate your backup routines</p>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-2">Orchestration</h2>
+          <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">Autonomous shard synchronization</p>
         </div>
         <button
           onClick={() => setShowNewSchedule(true)}
-          className="px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all flex items-center gap-2"
+          className="px-10 py-5 bg-[#0052A1] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[0.98] flex items-center gap-4 group"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          New Schedule
+          Deploy Protocol
         </button>
       </div>
 
-      {/* New Schedule Form */}
+      {/* New Schedule Overlay */}
       {showNewSchedule && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Create New Schedule</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Schedule Name</label>
-              <input
-                type="text"
-                value={newSchedule.name}
-                onChange={(e) => setNewSchedule({ ...newSchedule, name: e.target.value })}
-                placeholder="e.g., Daily Backup"
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Frequency</label>
-              <select
-                value={newSchedule.frequency}
-                onChange={(e) => setNewSchedule({ ...newSchedule, frequency: e.target.value as BackupSchedule['frequency'] })}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
-              >
-                <option value="hourly">Hourly</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Time</label>
-              <input
-                type="time"
-                value={newSchedule.time}
-                onChange={(e) => setNewSchedule({ ...newSchedule, time: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all"
-              />
-            </div>
-          </div>
-          <div className="flex gap-3 mt-6">
-            <button
-              onClick={addSchedule}
-              className="px-6 py-2 bg-cyan-500 text-white rounded-xl font-medium hover:bg-cyan-600 transition-all"
-            >
-              Create Schedule
-            </button>
-            <button
-              onClick={() => setShowNewSchedule(false)}
-              className="px-6 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-all"
-            >
-              Cancel
-            </button>
-          </div>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-300">
+           <div className="bg-white/90 backdrop-blur-2xl rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up border border-white/50 p-12">
+              <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-2">Protocol Configuration</h3>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10">Define new temporal sync window</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                <div className="space-y-2 col-span-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Protocol Designation</label>
+                  <input
+                    type="text"
+                    value={newSchedule.name}
+                    onChange={(e) => setNewSchedule({ ...newSchedule, name: e.target.value })}
+                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all uppercase"
+                    placeholder="e.g. ALPHA_BACKUP_NODE"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sync Cycle</label>
+                  <select
+                    value={newSchedule.frequency}
+                    onChange={(e) => setNewSchedule({ ...newSchedule, frequency: e.target.value as BackupSchedule['frequency']})}
+                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none cursor-pointer"
+                  >
+                    <option value="hourly">Hourly Cycle</option>
+                    <option value="daily">Daily Cycle</option>
+                    <option value="weekly">Weekly Cycle</option>
+                    <option value="monthly">Monthly Cycle</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Temporal Zero</label>
+                  <input
+                    type="time"
+                    value={newSchedule.time}
+                    onChange={(e) => setNewSchedule({ ...newSchedule, time: e.target.value })}
+                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setShowNewSchedule(false)}
+                  className="flex-1 px-8 py-5 border border-slate-100 text-slate-400 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all"
+                >
+                  Abort Mission
+                </button>
+                <button
+                  onClick={addSchedule}
+                  className="flex-1 px-8 py-5 bg-[#0052A1] text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 hover:bg-blue-800 transition-all active:scale-[0.98]"
+                >
+                  Confirm Deploy
+                </button>
+              </div>
+           </div>
         </div>
       )}
 
-      {/* Schedule Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {schedules.map((schedule) => (
           <div
             key={schedule.id}
-            className={`bg-white rounded-2xl shadow-sm border transition-all ${
-              schedule.enabled ? 'border-slate-100' : 'border-slate-200 opacity-60'
+            className={`sentinel-card group overflow-hidden transition-all duration-500 ${
+              schedule.enabled 
+                ? 'bg-white opacity-100 translate-y-0' 
+                : 'bg-slate-50 opacity-60 grayscale scale-[0.98]'
             }`}
           >
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${frequencyColors[schedule.frequency]}`}>
+            <div className={`h-2 w-full ${frequencyColors[schedule.frequency]}`}></div>
+            <div className="p-8">
+               <div className="flex items-start justify-between mb-8">
+                  <div className={`w-14 h-14 ${frequencyColors[schedule.frequency]} rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-500`}>
                     {frequencyIcons[schedule.frequency]}
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-slate-800">{schedule.name}</h3>
-                    <p className="text-sm text-slate-500 capitalize">{schedule.frequency} at {schedule.time}</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => toggleSchedule(schedule.id)}
-                  className={`w-12 h-6 rounded-full transition-all ${schedule.enabled ? 'bg-cyan-500' : 'bg-slate-300'}`}
-                >
-                  <div className={`w-5 h-5 bg-white rounded-full shadow transform transition-transform ${schedule.enabled ? 'translate-x-6' : 'translate-x-0.5'}`} />
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-2 text-sm text-slate-500">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <span>Next: {schedule.nextRun}</span>
-                </div>
-                <div className="flex gap-2">
-                  <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                  </button>
-                  <button 
-                    onClick={() => deleteSchedule(schedule.id)}
-                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  <button
+                    onClick={() => toggleSchedule(schedule.id)}
+                    className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none ${schedule.enabled ? 'bg-blue-600' : 'bg-slate-200'}`}
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${schedule.enabled ? 'translate-x-7' : 'translate-x-1'}`} />
                   </button>
-                </div>
-              </div>
+               </div>
+
+               <h3 className="text-xl font-black text-slate-900 tracking-tighter uppercase mb-1">{schedule.name}</h3>
+               <div className="flex items-center gap-3 mb-8">
+                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{schedule.frequency}</span>
+                 <div className="w-1 h-1 bg-slate-200 rounded-full"></div>
+                 <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">{schedule.time} SHARD</span>
+               </div>
+
+               <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                 <div className="flex items-center gap-2">
+                   <div className={`w-2 h-2 rounded-full ${schedule.enabled ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300'}`}></div>
+                   <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">{schedule.nextRun}</span>
+                 </div>
+                 <div className="flex items-center gap-2">
+                   <button 
+                    onClick={() => deleteSchedule(schedule.id)}
+                    className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                   >
+                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                     </svg>
+                   </button>
+                 </div>
+               </div>
             </div>
           </div>
         ))}
-      </div>
 
-      {/* Schedule Tips */}
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-6 text-white">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-          </svg>
-          Backup Best Practices
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-white/10 rounded-xl p-4">
-            <p className="font-medium mb-1">Regular Backups</p>
-            <p className="text-sm text-slate-300">Schedule backups at least daily for critical data</p>
-          </div>
-          <div className="bg-white/10 rounded-xl p-4">
-            <p className="font-medium mb-1">Off-Peak Hours</p>
-            <p className="text-sm text-slate-300">Run backups during low activity periods</p>
-          </div>
-          <div className="bg-white/10 rounded-xl p-4">
-            <p className="font-medium mb-1">Test Recovery</p>
-            <p className="text-sm text-slate-300">Regularly test your recovery procedures</p>
+        {/* Info Box */}
+        <div className="sentinel-card bg-slate-900 p-8 text-white relative overflow-hidden group border-none lg:col-span-1">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
+          <h4 className="text-lg font-black tracking-tighter uppercase mb-4 relative z-10">Neural Intelligence</h4>
+          <p className="text-xs font-medium text-slate-400 leading-relaxed mb-6 relative z-10">
+            Sentinel OS optimizes sync windows based on global shard availability and local network throughput.
+          </p>
+          <div className="flex items-center gap-3 relative z-10 text-[10px] font-black text-blue-400 uppercase tracking-widest">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
+            </svg>
+            Active Learning
           </div>
         </div>
       </div>
