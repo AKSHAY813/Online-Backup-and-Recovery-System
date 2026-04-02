@@ -1,11 +1,12 @@
 export interface BackupItem {
   id: string;
   name: string;
-  type: 'file' | 'folder' | 'system';
+  type: 'file' | 'folder' | 'system' | 'web';
   size: string;
   lastBackup: string;
   status: 'completed' | 'pending' | 'in-progress' | 'failed';
   versions: number;
+  url?: string;
 }
 
 export interface BackupSchedule {
@@ -17,11 +18,25 @@ export interface BackupSchedule {
   nextRun: string;
 }
 
+export interface CategoryStat {
+  used: string;
+  backedUp: number;
+  downloaded: number;
+  totalOnDevice: number;
+}
+
 export interface StorageStats {
   used: number;
   total: number;
   backupCount: number;
   lastBackup: string;
+  firebaseFileCount?: number;
+  categories?: {
+    video: CategoryStat;
+    document: CategoryStat;
+    desktop: CategoryStat;
+    download: CategoryStat;
+  };
 }
 
 export interface RecoveryPoint {

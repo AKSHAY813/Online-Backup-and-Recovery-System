@@ -1,4 +1,5 @@
 const DELAY = 800;
+import { database, ref, set, isFirebaseEnabled } from './firebaseConfig';
 
 interface User {
   name: string;
@@ -18,21 +19,36 @@ interface UserSettings {
   versions: string;
 }
 
+interface CategoryStat {
+  used: string;
+  backedUp: number;
+  downloaded: number;
+  totalOnDevice: number;
+}
+
 interface StorageStats {
   used: number;
   total: number;
   backupCount: number;
   lastBackup: string;
+  firebaseFileCount?: number;
+  categories?: {
+    video: CategoryStat;
+    document: CategoryStat;
+    desktop: CategoryStat;
+    download: CategoryStat;
+  };
 }
 
 interface BackupItem {
   id: string;
   name: string;
-  type: 'file' | 'folder' | 'system';
+  type: 'file' | 'folder' | 'system' | 'web';
   size: string;
   lastBackup: string;
   status: 'completed' | 'pending' | 'in-progress' | 'failed';
   versions: number;
+  url?: string;
 }
 
 
@@ -48,10 +64,17 @@ const DEFAULT_SETTINGS: UserSettings = {
 };
 
 const INITIAL_STATS: StorageStats = {
-  used: 0,
+  used: 24.5,
   total: 500,
-  backupCount: 0,
-  lastBackup: 'Never',
+  backupCount: 12,
+  lastBackup: 'Today, 2:45 PM',
+  firebaseFileCount: 8,
+  categories: {
+    video: { used: '12.4 GB', backedUp: 5, downloaded: 2, totalOnDevice: 15 },
+    document: { used: '2.1 GB', backedUp: 24, downloaded: 45, totalOnDevice: 120 },
+    desktop: { used: '8.2 GB', backedUp: 3, downloaded: 0, totalOnDevice: 12 },
+    download: { used: '1.8 GB', backedUp: 10, downloaded: 120, totalOnDevice: 250 }
+  }
 };
 
 // Storage keys
@@ -193,7 +216,7 @@ class MockApiService {
     };
   }
 
-  async createBackup(name: string, size: number): Promise<BackupItem> {
+  async createBackup(name: string, size: number, url?: string): Promise<BackupItem> {
     await this.wait();
     const email = localStorage.getItem(AUTH_KEY);
     if (!email) throw new Error('Not authenticated');
@@ -205,25 +228,40 @@ class MockApiService {
     const stats: StorageStats = statsRaw ? JSON.parse(statsRaw) : INITIAL_STATS;
 
     const sizeGB = size / (1024 * 1024 * 1024);
+    let type: 'file' | 'folder' | 'system' | 'web' = name.includes('.') ? 'file' : 'folder';
+    if (url) type = 'web';
     
     const newBackup: BackupItem = {
       id: Math.random().toString(36).substring(7),
       name,
-      type: name.includes('.') ? 'file' : 'folder',
+      type,
       size: sizeGB < 0.01 ? (size / (1024 * 1024)).toFixed(2) + ' MB' : sizeGB.toFixed(2) + ' GB',
       lastBackup: new Date().toISOString(),
       status: 'completed',
-      versions: 1
+      versions: 1,
+      url: url || undefined
     };
 
+    // Save to localStorage first (always works)
     backups.unshift(newBackup);
     localStorage.setItem(this.getUserDataKey(email, 'backups'), JSON.stringify(backups));
 
-    // Update stats
     stats.used = parseFloat((stats.used + sizeGB).toFixed(2));
     stats.backupCount += 1;
     stats.lastBackup = new Date().toLocaleString();
     localStorage.setItem(this.getUserDataKey(email, 'stats'), JSON.stringify(stats));
+
+    // Also write to Firebase Realtime Database if configured
+    if (isFirebaseEnabled() && database) {
+      try {
+        const userRef = ref(database, `users/${email.replace(/\./g, '_')}/backups/${newBackup.id}`);
+        await set(userRef, newBackup);
+        const statsRef = ref(database, `users/${email.replace(/\./g, '_')}/stats`);
+        await set(statsRef, stats);
+      } catch (fbErr) {
+        console.warn('Firebase write failed, data saved locally.', fbErr);
+      }
+    }
 
     return newBackup;
   }

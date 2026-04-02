@@ -189,55 +189,65 @@ export function App() {
 
   // App Shell First: Always render the structure if we have user context
   return (
-    <div className="flex min-h-screen bg-[#F8FAFC] relative">
+    <div className="flex min-h-screen bg-[#F8FAFC] relative overflow-hidden selection:bg-blue-200">
+      {/* Dynamic Background Elements */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+         <div className="absolute inset-0 bg-grid-pattern opacity-60"></div>
+         <div className="blob-1 absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tr from-blue-400/20 to-indigo-300/20"></div>
+         <div className="blob-2 absolute bottom-[-10%] right-[-10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-bl from-cyan-300/10 to-blue-500/10"></div>
+         <div className="blob-1 absolute top-[40%] left-[30%] w-[40vw] h-[40vw] rounded-full bg-blue-600/5 animation-delay-2000"></div>
+      </div>
+      
       <InstallBanner />
       <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
       <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
       
-      <main className="flex-1 overflow-x-hidden pb-20 md:pb-0">
-        <header className="bg-white border-b border-slate-100 px-6 py-4 sticky top-0 z-40">
+      <main className="flex-1 overflow-x-hidden pb-20 md:pb-0 relative z-10">
+        <header className="bg-white/70 backdrop-blur-2xl border-b border-slate-100/50 px-6 py-4 sticky top-0 z-40 shadow-sm transition-all duration-300">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-[#0052A1] rounded-lg flex items-center justify-center p-1.5 shadow-md">
+                <div className="w-8 h-8 bg-gradient-to-br from-[#0052A1] to-blue-600 rounded-lg flex items-center justify-center p-1.5 shadow-lg shadow-blue-500/30">
                    <svg className="w-full h-full text-white" viewBox="0 0 20 20" fill="currentColor">
                      <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                    </svg>
                 </div>
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight">Vault</h1>
+                <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 tracking-tight">Vault</h1>
               </div>
 
-              <div className="hidden md:flex items-center bg-slate-100 rounded-xl px-4 py-2 w-64 ml-4">
-                <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <div className="hidden md:flex items-center bg-slate-100/50 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all duration-300 rounded-2xl px-5 py-2.5 w-72 ml-8 group focus-within:bg-white focus-within:border-blue-300 focus-within:ring-4 focus-within:ring-blue-500/10">
+                <svg className="w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input
                   type="text"
                   placeholder="Search your vault..."
-                  className="bg-transparent border-none outline-none ml-2 text-sm w-full text-slate-600 placeholder:text-slate-400"
+                  className="bg-transparent border-none outline-none ml-3 text-sm font-medium w-full text-slate-700 placeholder:text-slate-400"
                 />
               </div>
             </div>
             
-            <div className="flex items-center gap-4">
-              <button className="p-2 text-slate-400 hover:text-slate-600">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <div className="flex items-center gap-6">
+              <button className="relative p-2.5 text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 rounded-full transition-all group">
+                <svg className="w-5 h-5 group-hover:animate-wiggle" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
+                <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 border border-white rounded-full animate-ping"></span>
+                <span className="absolute top-2 right-2.5 w-2 h-2 bg-rose-500 border border-white rounded-full"></span>
               </button>
               <div 
                 onClick={() => setIsProfileModalOpen(true)}
-                className="flex items-center gap-3 cursor-pointer group"
+                className="flex items-center gap-3 cursor-pointer group pl-2 border-l border-slate-100"
               >
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-black text-slate-900 leading-none mb-1 group-hover:text-blue-600 transition-colors">{user?.name || 'Architect'}</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Pro Plan Active</p>
+                  <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest leading-none bg-blue-50 inline-block px-1.5 py-0.5 rounded-md">Pro Active</p>
                 </div>
-                <div className="w-11 h-11 rounded-2xl bg-slate-200 border-2 border-white shadow-lg overflow-hidden ring-4 ring-blue-50/50 group-active:scale-95 transition-all">
+                <div className="w-11 h-11 rounded-2xl bg-white border border-slate-200 shadow-lg overflow-hidden ring-4 ring-transparent group-hover:ring-blue-100 group-active:scale-95 transition-all">
                   <img 
                     src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=0052A1&color=fff`} 
                     alt="Avatar" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
               </div>
