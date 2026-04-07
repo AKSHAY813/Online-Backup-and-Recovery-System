@@ -7,11 +7,15 @@ interface SettingsProps {
   onLogout: () => void;
 }
 
-export function Settings({ user, onLogout }: SettingsProps) {
+export function Settings({ user, settings, onSave, onLogout }: SettingsProps) {
   const [activeSubView, setActiveSubView] = useState<string | null>(null);
   const [passcode, setPasscode] = useState('');
   const [isHistoryUnlocked, setIsHistoryUnlocked] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [pendingStorage, setPendingStorage] = useState<{label: string, value: number} | null>(null);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handlePasscodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,42 +115,51 @@ export function Settings({ user, onLogout }: SettingsProps) {
           </div>
         );
 
-      case 'Vault Allocation':
+      case 'Vault Allocation': {
+        const storageOptions = [
+          { label: '256 GB', value: 256 },
+          { label: '512 GB', value: 512 },
+          { label: '1 TB', value: 1024 },
+          { label: '2 TB', value: 2048 }
+        ];
+        
         return (
           <div className="sentinel-card p-10 bg-white animate-slide-up">
-            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-8 uppercase">Cluster Distribution</h3>
-            <div className="space-y-8">
-               <div className="flex justify-between items-center bg-slate-50 p-6 rounded-[2rem] border border-slate-100">
-                  <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Global Shard Hub</p>
-                    <p className="text-xl font-black text-slate-900">12 Primary Clusters</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Health Rate</p>
-                    <p className="text-xl font-black text-blue-600">99.9%</p>
-                  </div>
-               </div>
-               <div className="grid grid-cols-3 gap-4">
-                  {[
-                    { label: 'Europe-1', val: '40%' },
-                    { label: 'US-West-2', val: '35%' },
-                    { label: 'Asia-East', val: '25%' }
-                  ].map((shard, i) => (
-                    <div key={i} className="text-center p-4 border border-slate-100 rounded-2xl">
-                       <p className="text-[8px] font-black text-slate-400 uppercase mb-2 tracking-widest">{shard.label}</p>
-                       <p className="text-lg font-black text-slate-900">{shard.val}</p>
-                    </div>
-                  ))}
-               </div>
-               <div className="h-2 bg-slate-100 rounded-full overflow-hidden flex">
-                  <div className="h-full bg-blue-500 w-[40%]"></div>
-                  <div className="h-full bg-indigo-500 w-[35%]"></div>
-                  <div className="h-full bg-emerald-500 w-[25%]"></div>
+            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-8 uppercase">Vault Capacity</h3>
+            <div className="space-y-6">
+               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-relaxed">
+                 Select your decentralized shard cluster capacity. Your vault uses strict 1-to-1 node pairing: only a single email terminal corresponds to a single storage vault. To access an alternative mail storage, you must explicitly detach and re-authenticate.
+               </p>
+               <div className="grid grid-cols-2 gap-4">
+                  {storageOptions.map((opt) => {
+                    const isSelected = settings?.totalStorage === opt.value;
+                    return (
+                      <button 
+                        key={opt.value}
+                        onClick={() => {
+                          if (opt.value > (settings?.totalStorage || 0)) {
+                             setPendingStorage(opt);
+                             setShowPaymentModal(true);
+                          } else {
+                             const newSettings = { ...settings, totalStorage: opt.value };
+                             onSave(newSettings);
+                          }
+                        }}
+                        className={`p-6 border-2 rounded-[1.5rem] transition-all text-center ${isSelected ? 'border-[#0052A1] bg-blue-50 shadow-lg shadow-blue-500/20 scale-[1.02] z-10' : 'border-slate-100 hover:border-blue-200'}`}
+                      >
+                         <p className={`text-2xl font-black ${isSelected ? 'text-[#0052A1]' : 'text-slate-900'} tracking-tighter`}>{opt.label}</p>
+                         <p className={`text-[10px] uppercase font-bold tracking-widest mt-2 ${isSelected ? 'text-blue-500' : 'text-slate-400'}`}>
+                           {isSelected ? 'Active Cluster' : (opt.value > (settings?.totalStorage || 0) ? 'Upgrade Node' : 'Allocate Node')}
+                         </p>
+                      </button>
+                    )
+                  })}
                </div>
             </div>
             <button onClick={() => setActiveSubView(null)} className="mt-8 w-full py-4 bg-slate-900 text-white rounded-2xl font-black uppercase tracking-widest transition-all">Close Allocation View</button>
           </div>
         );
+      }
 
       case 'Help Terminal':
         return (
@@ -298,6 +311,118 @@ export function Settings({ user, onLogout }: SettingsProps) {
             Back to Primary Node Settings
           </button>
           {renderSubView()}
+        </div>
+      )}
+
+      {showPaymentModal && pendingStorage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in">
+          <div className="bg-white rounded-[2rem] w-full max-w-md overflow-hidden flex flex-col shadow-[0_30px_60px_rgba(0,0,0,0.3)] animate-slide-up border border-slate-100 p-8">
+            {paymentSuccess ? (
+              <div className="text-center py-10">
+                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight">Payment Successful!</h3>
+                <p className="text-slate-500 font-bold text-sm uppercase tracking-widest mt-2 px-4">Node capacity extended to {pendingStorage.label}</p>
+                <button 
+                  onClick={() => {
+                    setShowPaymentModal(false);
+                    setPaymentSuccess(false);
+                  }}
+                  className="mt-8 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black uppercase tracking-widest w-full"
+                >
+                  Return to Settings
+                </button>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-2">Upgrade Node Capacity</h3>
+                <p className="text-slate-400 font-bold text-[10px] uppercase tracking-widest mb-8">Extend vault to {pendingStorage.label}</p>
+                
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 mb-8 flex items-center justify-between">
+                   <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Amount</p>
+                      <p className="text-2xl font-black text-slate-900">${pendingStorage.value === 512 ? '4.99' : pendingStorage.value === 1024 ? '9.99' : '19.99'} <span className="text-sm font-bold text-slate-400">/mo</span></p>
+                   </div>
+                   <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center">
+                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                   </div>
+                </div>
+
+                <div className="bg-white p-6 rounded-2xl border border-blue-100 flex items-center justify-between mt-6">
+                   <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center">
+                         <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.97-1.3-3.15-3.01-3.55V6h-1.3v2.04c-1.54.23-2.73 1.39-2.73 2.92 0 1.94 1.5 2.7 3.41 3.14 1.99.47 2.34 1.15 2.34 1.84 0 .71-.58 1.48-2.2 1.48-1.57 0-2.34-.84-2.43-1.89h-1.76c.12 1.88 1.38 2.97 3.09 3.33V21h1.3v-2.02c1.68-.24 2.85-1.45 2.85-3.05 0-2.35-1.83-3.02-3.27-3.37z"/></svg>
+                      </div>
+                      <div>
+                         <p className="font-black tracking-tight text-sm text-slate-800">Razorpay Secured</p>
+                         <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Real-time Encrypted Processing</p>
+                      </div>
+                   </div>
+                </div>
+
+                <div className="mt-8 flex gap-3 flex-col-reverse md:flex-row">
+                  <button onClick={() => setShowPaymentModal(false)} className="px-6 py-4 border border-slate-200 text-slate-600 rounded-2xl font-black tracking-widest text-[10px] uppercase hover:bg-slate-50 w-full md:w-auto transition-all">Cancel</button>
+                  <button 
+                    onClick={async () => {
+                       setIsProcessingPayment(true);
+                       
+                       // Dynamically load Razorpay SDK
+                       const res = await new Promise((resolve) => {
+                          const script = document.createElement('script');
+                          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+                          script.onload = () => resolve(true);
+                          script.onerror = () => resolve(false);
+                          document.body.appendChild(script);
+                       });
+
+                       if (!res) {
+                          alert('Razorpay SDK failed to load. Are you online?');
+                          setIsProcessingPayment(false);
+                          return;
+                       }
+
+                       // Setup payment options securely
+                       const options = {
+                           key: 'rzp_test_placeholder_key', // This is a placeholder test key. Connect your real key here!
+                           amount: (pendingStorage.value === 512 ? 499 : pendingStorage.value === 1024 ? 999 : 1999) * 100, // Amount in paise
+                           currency: 'INR',
+                           name: 'CloudVault',
+                           description: `Upgrade to ${pendingStorage.label} Node Capacity`,
+                           image: 'https://ui-avatars.com/api/?name=Cloud+Vault&background=0052A1&color=fff',
+                           handler: function (response: any) {
+                              // Execute successful capacity mapping after verifiable payment
+                              setPaymentSuccess(true);
+                              onSave({ ...settings, totalStorage: pendingStorage.value });
+                           },
+                           prefill: {
+                               name: user?.name || 'Architect User',
+                               email: user?.email || 'architect@cloudvault.sh',
+                           },
+                           theme: {
+                               color: '#0052A1'
+                           },
+                           modal: {
+                               ondismiss: function() {
+                                   setIsProcessingPayment(false);
+                               }
+                           }
+                       };
+
+                       const paymentObject = new (window as any).Razorpay(options);
+                       paymentObject.open();
+                    }}
+                    disabled={isProcessingPayment}
+                    className="flex-1 px-6 py-4 bg-[#0052A1] text-white rounded-2xl font-black tracking-widest text-[10px] uppercase hover:bg-blue-800 disabled:opacity-50 transition-all shadow-xl shadow-blue-500/20"
+                  >
+                    {isProcessingPayment ? 'Connecting Gateway...' : `Pay & Upgrade Node (${pendingStorage.label})`}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
 

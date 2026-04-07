@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, ref, set, get, child, onValue } from "firebase/database";
 import { getAnalytics } from "firebase/analytics";
 
 /**
@@ -32,5 +32,6 @@ try {
   console.warn("⚠️ Firebase init failed. Make sure Realtime Database is enabled in Firebase Console.", error);
 }
 
-export { database, ref, set };
+export { database, ref, set, get, child, onValue };
 export const isFirebaseEnabled = () => database !== null;
+

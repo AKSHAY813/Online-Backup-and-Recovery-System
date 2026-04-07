@@ -1,23 +1,25 @@
 import { useState, useEffect } from 'react';
-
-const allVaultFiles = [
-  { id: '1', name: 'Design_Final.fig', type: 'figma', size: '25.4 MB', date: 'Mar 12, 2024', status: 'recovered' },
-  { id: '2', name: 'Presentation.pdf', type: 'pdf', size: '12.8 MB', date: 'Mar 11, 2024', status: 'vaulted' },
-  { id: '3', name: 'Project_Assets.zip', type: 'archive', size: '480 MB', date: 'Mar 10, 2024', status: 'recovered' },
-  { id: '4', name: 'Profile_Photo.png', type: 'image', size: '2.4 MB', date: 'Mar 09, 2024', status: 'vaulted' },
-  { id: '5', name: 'Dashboard_Mockup.png', type: 'image', size: '3.8 MB', date: 'Mar 09, 2024', status: 'recovered' },
-  { id: '6', name: 'Annual_Report.docx', type: 'doc', size: '1.2 MB', date: 'Mar 08, 2024', status: 'vaulted' },
-];
+import { mockApi } from '@/services/mockApi';
+import type { BackupItem } from '@/types';
 
 export function Recovery() {
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [displayFiles, setDisplayFiles] = useState<any[]>([]);
+  const [backups, setBackups] = useState<BackupItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Only show recovered files as per user request
-    const filtered = allVaultFiles.filter(f => f.status === 'recovered');
-    setDisplayFiles(filtered);
+    const loadData = async () => {
+      try {
+        const data = await mockApi.getDashboardData();
+        setBackups(data.recentBackups);
+      } catch (error) {
+        console.error('Failed to load backups for recovery:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadData();
   }, []);
 
   const toggleFileSelection = (id: string) => {
@@ -25,6 +27,28 @@ export function Recovery() {
       prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
     );
   };
+
+  const getIconForType = (name: string, type: string) => {
+    const n = name.toLowerCase();
+    if (n.endsWith('.docx') || n.endsWith('.doc')) return 'doc';
+    if (n.endsWith('.pdf')) return 'pdf';
+    if (n.endsWith('.png') || n.endsWith('.jpg') || n.endsWith('.jpeg')) return 'image';
+    if (n.endsWith('.zip') || n.endsWith('.archive')) return 'archive';
+    return type;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-12 animate-pulse pb-32">
+        <div className="h-20 w-3/4 bg-slate-200 rounded-3xl mb-12"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+           {[1, 2, 3].map(i => <div key={i} className="h-48 bg-slate-200 rounded-[2.5rem]"></div>)}
+        </div>
+      </div>
+    );
+  }
+
+  const filteredBackups = backups.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div className="space-y-12 animate-slide-up pb-32">
@@ -36,7 +60,7 @@ export function Recovery() {
            </div>
            <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-3xl border border-slate-100 shadow-sm">
               <button className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20 transition-all">Successfully Recovered</button>
-              <button className="px-6 py-3 text-slate-400 hover:text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-colors">Vault Stream</button>
+              <button className="px-6 py-3 text-slate-400 hover:text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-colors font-bold uppercase transition-all">Vault Stream</button>
            </div>
         </div>
         
@@ -58,7 +82,7 @@ export function Recovery() {
         </div>
 
         <div className="flex items-center justify-between mb-8 px-6">
-           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">Verified Recoveries: {displayFiles.length} Nodes</p>
+           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">Verified Recoveries: {filteredBackups.length} Nodes</p>
            <div className="flex items-center gap-4">
               <span className="text-emerald-600 font-black text-[10px] uppercase tracking-[0.3em] font-['Outfit']">{selectedFiles.length} Shards Selected</span>
            </div>
@@ -66,61 +90,64 @@ export function Recovery() {
 
         {/* File List Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-           {displayFiles.filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase())).map((file) => (
-             <div 
-                key={file.id} 
-                onClick={() => toggleFileSelection(file.id)}
-                className={`sentinel-card p-8 flex flex-col justify-between cursor-pointer group transition-all duration-500 ${
-                   selectedFiles.includes(file.id) ? 'ring-4 ring-emerald-500/10 border-emerald-500 bg-emerald-50/20' : 'bg-white'
-                }`}
-             >
-                <div className="flex items-start justify-between mb-8">
-                   <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 ${
-                      file.type === 'image' ? 'bg-rose-50 text-rose-500' :
-                      file.type === 'pdf' ? 'bg-orange-50 text-orange-500' :
-                      file.type === 'figma' ? 'bg-purple-50 text-purple-500' : 'bg-emerald-50 text-emerald-600'
-                   }`}>
-                      {file.type === 'image' && (
-                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                           <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                      {(file.type === 'pdf' || file.type === 'doc') && (
-                        <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                           <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
-                        </svg>
-                      )}
-                      {file.type === 'figma' && (
-                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8.5 11c1.933 0 3.5-1.567 3.5-3.5S10.433 4 8.5 4 5 5.567 5 7.5 6.567 11 8.5 11zM15.5 11c1.933 0 3.5-1.567 3.5-3.5S17.433 4 15.5 4 12 5.567 12 7.5s1.567 3.5 3.5 3.5zM8.5 18c1.933 0 3.5-1.567 3.5-3.5 0-1.933-1.567-3.5-3.5-3.5S5 12.567 5 14.5 6.567 18 8.5 18zM15.5 18c1.933 0 3.5-1.567 3.5-3.5 0-1.933-1.567-3.5-3.5-3.5S12 12.567 12 14.5s1.567 3.5 3.5 3.5zM8.5 24c1.933 0 3.5-1.567 3.5-3.5S10.433 17 8.5 17 5 18.567 5 20.5 6.567 24 8.5 24z" />
-                         </svg>
-                      )}
-                      {file.type === 'archive' && (
+           {filteredBackups.map((file) => {
+             const iconType = getIconForType(file.name, file.type);
+             return (
+              <div 
+                 key={file.id} 
+                 onClick={() => toggleFileSelection(file.id)}
+                 className={`sentinel-card p-8 flex flex-col justify-between cursor-pointer group transition-all duration-500 ${
+                    selectedFiles.includes(file.id) ? 'ring-4 ring-emerald-500/10 border-emerald-500 bg-emerald-50/20' : 'bg-white'
+                 }`}
+              >
+                 <div className="flex items-start justify-between mb-8">
+                    <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 ${
+                       iconType === 'image' ? 'bg-rose-50 text-rose-500' :
+                       iconType === 'pdf' ? 'bg-orange-50 text-orange-500' :
+                       iconType === 'doc' ? 'bg-[#0052A1]/10 text-[#0052A1]' : 'bg-emerald-50 text-emerald-600'
+                    }`}>
+                       {iconType === 'image' && (
                          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
                          </svg>
-                      )}
-                   </div>
-                   <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${
-                      selectedFiles.includes(file.id) ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-500/40' : 'border-slate-100 bg-white group-hover:border-slate-300'
-                   }`}>
-                      {selectedFiles.includes(file.id) && (
-                         <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                       )}
+                       {iconType === 'pdf' && (
+                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
                          </svg>
-                      )}
-                   </div>
-                </div>
-                <div>
-                   <p className="font-black text-slate-900 text-xl tracking-tight mb-2 group-hover:text-emerald-600 transition-colors uppercase truncate leading-none">{file.name}</p>
-                   <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{file.size}</span>
-                      <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                      <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none font-bold">SHA-256 OK</span>
-                   </div>
-                </div>
-             </div>
-           ))}
+                       )}
+                       {iconType === 'doc' && (
+                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                         </svg>
+                       )}
+                       {iconType === 'archive' && (
+                          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                          </svg>
+                       )}
+                    </div>
+                    <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${
+                       selectedFiles.includes(file.id) ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-500/40' : 'border-slate-100 bg-white group-hover:border-slate-300'
+                    }`}>
+                       {selectedFiles.includes(file.id) && (
+                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
+                          </svg>
+                       )}
+                    </div>
+                 </div>
+                 <div>
+                    <p className="font-black text-slate-900 text-xl tracking-tight mb-2 group-hover:text-emerald-600 transition-colors uppercase truncate leading-none">{file.name}</p>
+                    <div className="flex items-center gap-3">
+                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{file.size}</span>
+                       <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+                       <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none font-bold">SHA-256 OK</span>
+                    </div>
+                 </div>
+              </div>
+             );
+           })}
         </div>
       </div>
 
@@ -142,7 +169,7 @@ export function Recovery() {
                   </div>
                </div>
                <div className="flex items-center gap-3">
-                  <button className="flex items-center gap-4 px-8 py-5 bg-emerald-600 text-white rounded-[1.75rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all group">
+                  <button className="flex items-center gap-4 px-8 py-5 bg-emerald-600 text-white rounded-[1.75rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all group font-bold">
                      Restore Internally
                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -155,3 +182,4 @@ export function Recovery() {
     </div>
   );
 }
+

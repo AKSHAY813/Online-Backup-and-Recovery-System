@@ -124,20 +124,20 @@ export function Dashboard() {
 
            <div className="space-y-8">
               <div className="flex items-baseline gap-3">
-                 <span className="text-7xl font-black text-slate-900 tracking-tighter tabular-nums leading-none">
+                 <span className={`text-7xl font-black tracking-tighter tabular-nums leading-none ${storagePercent >= 100 ? 'text-red-600' : 'text-slate-900'}`}>
                    {stats?.used || '0.0'}
                  </span>
                  <div className="flex flex-col">
-                   <span className="text-xl font-black text-blue-600 leading-none">GB</span>
-                   <span className="text-sm font-bold text-slate-400 mt-1 uppercase tracking-widest">Used</span>
+                   <span className={`text-xl font-black leading-none ${storagePercent >= 100 ? 'text-red-500' : 'text-blue-600'}`}>GB</span>
+                   <span className={`text-sm font-bold mt-1 uppercase tracking-widest ${storagePercent >= 100 ? 'text-red-400' : 'text-slate-400'}`}>Used</span>
                  </div>
                  <span className="text-slate-400 font-bold ml-auto text-sm uppercase tracking-widest">of {stats?.total}GB Vault</span>
               </div>
               
-              <div className="sentinel-progress h-3.5 bg-slate-100 ring-4 ring-slate-50">
+              <div className={`sentinel-progress h-3.5 ring-4 ${storagePercent >= 100 ? 'bg-red-100 ring-red-50' : 'bg-slate-100 ring-slate-50'}`}>
                  <div 
-                   className="sentinel-progress-bar h-full" 
-                   style={{ width: `${storagePercent}%` }}
+                   className={storagePercent >= 100 ? "h-full bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all" : "sentinel-progress-bar h-full"}
+                   style={{ width: `${Math.min(storagePercent, 100)}%` }}
                  ></div>
               </div>
 

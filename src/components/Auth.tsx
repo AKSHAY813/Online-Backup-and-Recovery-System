@@ -150,6 +150,9 @@ export function Auth({ onLogin }: AuthProps) {
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
+                <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest ml-1 mt-1">
+                  1-to-1 Map: Only one mail terminal is supported per active session. To change vaults, re-login is required.
+                </p>
               </div>
 
               {!isForgot && (

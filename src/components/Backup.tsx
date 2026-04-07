@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { CloudImportModal } from './CloudImportModal';
+import { mockApi } from '@/services/mockApi';
+import type { StorageStats } from '@/types';
 
 export function Backup() {
   const [progress, setProgress] = useState(0);
@@ -11,9 +13,14 @@ export function Backup() {
   const [showSummaryDetails, setShowSummaryDetails] = useState(false);
   const [scannedFiles, setScannedFiles] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState('all');
+  const [stats, setStats] = useState<StorageStats | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const formatStorage = (gb: number | undefined) => gb ? (gb >= 1000 ? `${(gb / 1024).toFixed(1)} TB` : `${gb} GB`) : '0 GB';
+
   useEffect(() => {
+    mockApi.getDashboardData().then(data => setStats(data.stats));
+    
     // Generate dynamic files for different categories
     const mockFiles = [
       { name: 'Wedding_Video.mp4', size: '1.2 GB', category: 'video', date: '2025-01-10' },
@@ -146,7 +153,7 @@ export function Backup() {
             </div>
             <div className="bg-white/80 backdrop-blur-md p-8 rounded-[2rem] border border-slate-100 shadow-sm transition-all hover:bg-white text-center">
                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Total Shard Volume</p>
-               <p className="text-3xl font-black text-slate-900 tracking-tight">{isUploading ? uploadStats.volume : '0.0 GB / 2.0 TB'}</p>
+               <p className="text-3xl font-black text-slate-900 tracking-tight">{isUploading ? uploadStats.volume : `0.0 GB / ${formatStorage(stats?.total)}`}</p>
             </div>
          </div>
       </div>
@@ -171,16 +178,16 @@ export function Backup() {
                </div>
             </div>
             <div className="flex items-baseline gap-3 mb-6">
-               <span className="text-5xl font-black text-slate-900 leading-none">1.2</span>
-               <span className="text-xl font-bold text-slate-400 uppercase tracking-widest leading-none">TB</span>
-               <span className="text-slate-400 font-bold ml-auto text-sm uppercase tracking-widest">of 2.0 TB used</span>
+               <span className="text-5xl font-black text-slate-900 leading-none">{stats?.used || '0.0'}</span>
+               <span className="text-xl font-bold text-slate-400 uppercase tracking-widest leading-none">GB</span>
+               <span className="text-slate-400 font-bold ml-auto text-sm uppercase tracking-widest">of {formatStorage(stats?.total)} used</span>
             </div>
             <div className="sentinel-progress h-2.5 mb-6 bg-slate-100">
-               <div className="sentinel-progress-bar" style={{ width: '60%' }}></div>
+               <div className="sentinel-progress-bar" style={{ width: `${Math.min(100, ((stats?.used || 0) / (stats?.total || 1)) * 100)}%` }}></div>
             </div>
             <div className="flex justify-between items-center bg-slate-50 p-4 rounded-2xl">
                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Overall Usage</span>
-               <span className="text-sm font-black text-blue-600 uppercase tracking-widest">60% Complete</span>
+               <span className="text-sm font-black text-blue-600 uppercase tracking-widest">{Math.min(100, Math.round(((stats?.used || 0) / (stats?.total || 1)) * 100))}% Complete</span>
             </div>
          </div>
 
