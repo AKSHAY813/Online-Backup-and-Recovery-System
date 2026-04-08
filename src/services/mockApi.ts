@@ -42,6 +42,14 @@ interface StorageStats {
   };
 }
 
+interface BackupVersion {
+  id: string;
+  timestamp: string;
+  size: string;
+  hash: string;
+  node: string;
+}
+
 interface BackupItem {
   id: string;
   name: string;
@@ -51,6 +59,7 @@ interface BackupItem {
   status: 'completed' | 'pending' | 'in-progress' | 'failed';
   versions: number;
   url?: string;
+  history?: BackupVersion[];
 }
 
 
@@ -81,8 +90,24 @@ const INITIAL_STATS: StorageStats = {
 };
 
 const INITIAL_BACKUPS: BackupItem[] = [
-  { id: 'b1', name: 'Legal_Contract_v4.docx', type: 'file', size: '1.2 MB', lastBackup: new Date().toISOString(), status: 'completed', versions: 3 },
-  { id: 'b2', name: 'Thesis_Final_Draft.docx', type: 'file', size: '4.5 MB', lastBackup: new Date().toISOString(), status: 'completed', versions: 5 },
+  { 
+    id: 'b1', name: 'Legal_Contract_v4.docx', type: 'file', size: '1.2 MB', lastBackup: new Date().toISOString(), status: 'completed', versions: 3,
+    history: [
+      { id: 'v1', timestamp: new Date(Date.now() - 86400000 * 2).toISOString(), size: '1.1 MB', hash: 'SHA256:7f...a1', node: 'Laptop Node' },
+      { id: 'v2', timestamp: new Date(Date.now() - 86400000).toISOString(), size: '1.15 MB', hash: 'SHA256:3d...e2', node: 'Mobile Node' },
+      { id: 'v3', timestamp: new Date().toISOString(), size: '1.2 MB', hash: 'SHA256:9a...f4', node: 'Laptop Node' }
+    ]
+  },
+  { 
+    id: 'b2', name: 'Thesis_Final_Draft.docx', type: 'file', size: '4.5 MB', lastBackup: new Date().toISOString(), status: 'completed', versions: 5,
+    history: [
+      { id: 'v1', timestamp: new Date(Date.now() - 86400000 * 5).toISOString(), size: '3.2 MB', hash: 'SHA256:1a...b2', node: 'Laptop Node' },
+      { id: 'v2', timestamp: new Date(Date.now() - 86400000 * 4).toISOString(), size: '3.8 MB', hash: 'SHA256:2c...d3', node: 'Laptop Node' },
+      { id: 'v3', timestamp: new Date(Date.now() - 86400000 * 3).toISOString(), size: '4.1 MB', hash: 'SHA256:4e...f5', node: 'Mobile Node' },
+      { id: 'v4', timestamp: new Date(Date.now() - 86400000 * 1).toISOString(), size: '4.4 MB', hash: 'SHA256:6g...h6', node: 'Laptop Node' },
+      { id: 'v5', timestamp: new Date().toISOString(), size: '4.5 MB', hash: 'SHA256:8i...j7', node: 'Laptop Node' }
+    ]
+  },
   { id: 'b3', name: 'Project_Proposal_2025.docx', type: 'file', size: '2.8 MB', lastBackup: new Date().toISOString(), status: 'completed', versions: 2 },
 ];
 
@@ -348,6 +373,25 @@ class MockApiService {
     await this.saveToFirebase(email, 'stats', stats);
 
     return newBackup;
+  }
+
+  async getFileVersions(id: string): Promise<BackupVersion[]> {
+    await this.wait();
+    const email = localStorage.getItem(AUTH_KEY);
+    if (!email) throw new Error('Not authenticated');
+
+    const backupsRaw = localStorage.getItem(this.getUserDataKey(email, 'backups'));
+    const backups: BackupItem[] = backupsRaw ? JSON.parse(backupsRaw) : [];
+    
+    const file = backups.find(b => b.id === id);
+    if (file && file.history) {
+      return file.history;
+    }
+    
+    // Default mock history if none exists
+    return [
+      { id: 'v1', timestamp: file?.lastBackup || new Date().toISOString(), size: file?.size || '0 MB', hash: 'SHA256:default', node: 'Cloud Hub' }
+    ];
   }
 }
 

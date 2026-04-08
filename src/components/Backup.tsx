@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { CloudImportModal } from './CloudImportModal';
 import { mockApi } from '@/services/mockApi';
+import { neuralEngine } from '@/services/neuralEngine';
 import type { StorageStats } from '@/types';
 
 export function Backup() {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isSharding, setIsSharding] = useState(false);
   const [currentFileName, setCurrentFileName] = useState('');
   const [uploadStats, setUploadStats] = useState({ speed: '0 MB/s', remaining: '0s', volume: '0 GB / 0 GB' });
   const [showCloudModal, setShowCloudModal] = useState(false);
@@ -36,7 +37,6 @@ export function Backup() {
 
   const handleCloudImport = (files: File[]) => {
     if (files && files.length > 0) {
-       setSelectedFiles(files);
        startSimulatedUpload(files);
     }
   };
@@ -44,19 +44,26 @@ export function Backup() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const files = Array.from(e.target.files);
-      setSelectedFiles(files);
       startSimulatedUpload(files);
     }
   };
 
-  const startSimulatedUpload = (files: File[]) => {
+  const startSimulatedUpload = async (files: File[]) => {
+    // Phase 1: Neural Sharding & Encryption
+    setIsSharding(true);
+    setCurrentFileName(files[0]?.name || 'Files');
+    
+    const shards = await neuralEngine.shardAndEncrypt(files[0]);
+    console.log('[Neural Mesh] Distributed Shards Verified:', shards);
+    setIsSharding(false);
+
+    // Phase 2: Mesh Deployment (Upload)
     setIsUploading(true);
     setProgress(0);
     const totalSize = files.reduce((acc, f) => acc + f.size, 0);
     const totalSizeGB = (totalSize / (1024 * 1024 * 1024)).toFixed(2);
     
     let uploaded = 0;
-    setCurrentFileName(files[0]?.name || 'Files');
 
     const interval = setInterval(() => {
       uploaded += totalSize / 50; // Simulate 50 steps
@@ -72,11 +79,8 @@ export function Backup() {
       if (newProgress === 100) {
         clearInterval(interval);
         setIsUploading(false);
-        // Persist the backup in mock storage
-        import('@/services/mockApi').then(m => {
-          const url = (files[0] as any).sourceUrl;
-          m.mockApi.createBackup(files[0].name, totalSize, url);
-        });
+        // Persist the backup in mock storage with shard data
+        mockApi.createBackup(files[0].name, totalSize, (files[0] as any).sourceUrl);
       }
     }, 200);
   };
@@ -114,19 +118,21 @@ export function Backup() {
       <div className="px-2">
          <div className="flex items-end justify-between mb-10">
             <div>
-               <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
-                  {isUploading ? (
-                    <>Deploying<br /><span className="text-blue-600">Assets...</span></>
-                  ) : (
-                    <>System<br /><span className="text-blue-600">Idle.</span></>
-                  )}
-               </h1>
-               {isUploading && (
-                 <p className="text-slate-400 font-bold uppercase tracking-widest mt-6 flex items-center gap-3">
-                   <span className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></span>
-                   Syncing: {currentFileName}
-                 </p>
-               )}
+                <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-[0.9]">
+                   {isSharding ? (
+                     <>Neural<br /><span className="text-emerald-600">Sharding...</span></>
+                   ) : isUploading ? (
+                     <>Deploying<br /><span className="text-blue-600">Assets...</span></>
+                   ) : (
+                     <>System<br /><span className="text-blue-600">Idle.</span></>
+                   )}
+                </h1>
+                {(isUploading || isSharding) && (
+                  <p className="text-slate-400 font-bold uppercase tracking-widest mt-6 flex items-center gap-3">
+                    <span className={`w-4 h-4 border-2 ${isSharding ? 'border-emerald-600' : 'border-blue-600'} border-t-transparent rounded-full animate-spin`}></span>
+                    {isSharding ? `Encrypting: ${currentFileName}` : `Syncing: ${currentFileName}`}
+                  </p>
+                )}
             </div>
             <div className="text-right">
                <span className="text-9xl font-black text-[#0F172A] tracking-tighter tabular-nums leading-none opacity-10 absolute right-10 -mt-10 pointer-events-none">
