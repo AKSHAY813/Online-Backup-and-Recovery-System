@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { StorageStats, BackupItem } from '@/types';
 import { mockApi } from '@/services/mockApi';
 import { neuralEngine } from '@/services/neuralEngine';
+import { NeuralMeshVisualizer } from './NeuralMeshVisualizer';
 
 export function Dashboard() {
   const [stats, setStats] = useState<StorageStats | null>(null);
@@ -93,10 +94,12 @@ export function Dashboard() {
             </div>
         </div>
         
-        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] text-center md:text-left mb-8 md:mb-14">
+        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] text-center md:text-left mb-8 md:mb-14 relative z-10">
           Neural Mesh<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500">Cognitive Vault.</span>
         </h1>
+        
+        <NeuralMeshVisualizer />
         
         {/* Advanced AI Insight Section */}
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-6">

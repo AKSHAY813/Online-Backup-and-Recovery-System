@@ -185,6 +185,7 @@ export function App() {
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] relative overflow-hidden selection:bg-blue-600 selection:text-white">
+      <div className="scanline"></div>
       {/* Background Mesh */}
       <div className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
