@@ -42,7 +42,7 @@ class NeuralEngine {
   }
 
   /**
-   * Predictive Analysis Engine (AI Sentinel)
+   * Predictive Analysis Engine (AI Vault)
    * Analyzes file access patterns and predicts backup needs.
    */
   async getPredictiveInsights() {

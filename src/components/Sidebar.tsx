@@ -55,7 +55,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             </svg>
           </div>
           <div className="flex flex-col">
-            <h1 className="text-2xl font-black tracking-tighter leading-none group-hover:text-blue-400 transition-colors">Sentinel</h1>
+            <h1 className="text-2xl font-black tracking-tighter leading-none group-hover:text-blue-400 transition-colors">Vault</h1>
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mt-1.5 leading-none">Blue Node</p>
           </div>
         </div>

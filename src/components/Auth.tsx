@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { generateSecureAvatar } from '../services/huggingFace';
 
-
 interface AuthProps {
   onLogin: (user: any) => void;
 }
 
 type AuthView = 'login' | 'signup' | 'forgot' | 'otp' | 'success';
-
 
 export function Auth({ onLogin }: AuthProps) {
   const [view, setView] = useState<AuthView>('signup');
@@ -28,21 +26,18 @@ export function Auth({ onLogin }: AuthProps) {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
     setTimeout(() => {
       if (view === 'forgot') {
-        alert('Recovery link sent to ' + formData.email);
+        alert('Shard recovery pattern sent to ' + formData.email);
         setView('login');
       } else if (view === 'signup') {
-        // Transition to OTP for signup
         setView('otp');
       } else {
         const user = {
-          name: formData.name || 'John Doe',
+          name: formData.name || 'Architect User',
           email: formData.email,
-          plan: 'Standard Cloud Plan'
+          plan: 'Standard Tier'
         };
-        // Persist in localStorage for "after uninstall" simulation (standard persistence)
         localStorage.setItem('cloudvault_user', JSON.stringify(user));
         localStorage.setItem('cloudvault_auth_email', user.email);
         onLogin(user);
@@ -53,14 +48,11 @@ export function Auth({ onLogin }: AuthProps) {
 
   const handleVerifyOTP = async () => {
     setIsLoading(true);
-    // Simulate verification
     setTimeout(async () => {
       setIsLoading(false);
       setView('success');
       setIsGenerating(true);
-      
-      // Generate AI Avatar
-      const avatar = await generateSecureAvatar(`Security vault access key for ${formData.name}`);
+      const avatar = await generateSecureAvatar(`Neural ID fingerprint for ${formData.name}`);
       setGeneratedAvatar(avatar);
       setIsGenerating(false);
     }, 1500);
@@ -68,9 +60,9 @@ export function Auth({ onLogin }: AuthProps) {
 
   const handleFinalize = () => {
     const user = {
-      name: formData.name || 'John Doe',
+      name: formData.name || 'Vault User',
       email: formData.email,
-      plan: 'Standard Cloud Plan',
+      plan: 'Neural Pro',
       avatar: generatedAvatar
     };
     localStorage.setItem('cloudvault_user', JSON.stringify(user));
@@ -78,100 +70,94 @@ export function Auth({ onLogin }: AuthProps) {
     onLogin(user);
   };
 
-
   const isLogin = view === 'login';
   const isForgot = view === 'forgot';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col p-8 items-center justify-center relative overflow-hidden font-['Outfit']">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-600/5 blur-[120px] rounded-full"></div>
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/5 blur-[120px] rounded-full"></div>
+    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center relative overflow-hidden font-['Outfit'] selection:bg-blue-500/30 selection:text-white pb-10">
+      {/* Neural Background Mesh */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[80vw] h-[80vw] bg-blue-600/10 rounded-full blur-[120px] animate-neural-pulse"></div>
+        <div className="absolute bottom-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-indigo-600/10 rounded-full blur-[120px]"></div>
+        <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
       </div>
 
-      <div className="w-full max-w-md relative z-10 animate-slide-up">
-        {/* Header Navigation */}
-        <div className="flex items-center justify-between mb-12">
-          {isForgot || view === 'otp' ? (
-            <button 
-              onClick={() => setView('login')}
-              className="p-3 bg-white text-slate-400 hover:text-blue-600 rounded-2xl shadow-sm border border-slate-100 transition-all active:scale-90"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-            </button>
-          ) : <div className="w-11"></div>}
-          
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-blue-500/20 rotate-3">
-             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-               <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-             </svg>
-          </div>
-          
-          <div className="w-11"></div>
+      <div className="w-full max-w-xl px-1 relative z-10 animate-slide-up">
+        {/* Superior Brand Identity Header */}
+        <div className="text-center mb-12 relative px-4">
+           <div className="flex justify-center mb-10">
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-500 via-indigo-600 to-blue-700 rounded-[2.5rem] flex items-center justify-center text-white shadow-[0_30px_60px_rgba(37,99,235,0.4)] animate-float-slow ring-8 ring-white/5 backdrop-blur-3xl overflow-hidden group">
+                 <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent"></div>
+                 <svg className="w-12 h-12 relative z-10" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                 </svg>
+              </div>
+           </div>
+           
+           <div className="flex flex-col items-center">
+              <div className="flex items-center gap-4 mb-4">
+                 <span className="w-10 h-[2px] bg-blue-500/50 rounded-full"></span>
+                 <span className="Vault-badge bg-blue-600/20 text-blue-400 border-blue-500/20 uppercase">Core Access v4.2</span>
+                 <span className="w-10 h-[2px] bg-blue-500/50 rounded-full"></span>
+              </div>
+              <h1 className="text-5xl md:text-7xl font-black text-white tracking-[-0.05em] uppercase leading-[0.85]">
+                {isForgot ? 'Shard Recovery' : isLogin ? 'Neural Access' : view === 'otp' ? 'Verification' : view === 'success' ? 'Vault Ready' : 'Vault Hub'}
+              </h1>
+              <p className="text-slate-400 font-black text-xs md:text-sm uppercase tracking-[0.5em] mt-6 opacity-60 uppercase">
+                 {isForgot ? 'Locate Decentralized Shard' : isLogin ? 'Authorized Node Deployment' : view === 'otp' ? 'Validate Biometric Key' : view === 'success' ? 'Synchronizing Cluster' : 'Initialize Mesh Encryption'}
+              </p>
+           </div>
         </div>
 
-        {/* Content Box */}
-        <div className="sentinel-card p-10 bg-white/80 backdrop-blur-xl border border-white/50 shadow-2xl">
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black text-slate-900 tracking-tighter leading-none mb-4 uppercase">
-              {isForgot ? 'Recovery' : isLogin ? 'Authenticate' : view === 'otp' ? 'Validate' : view === 'success' ? 'Synchronized' : 'Initiate'}
-            </h1>
-            <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">
-               {isForgot ? 'Secure Shard Retrieval' : isLogin ? 'Accessing Global Node' : view === 'otp' ? 'Biometric verification' : view === 'success' ? 'Vault access granted' : 'Creating decentralized shard'}
-            </p>
-          </div>
-
+        {/* High-Fidelity AUTH Container */}
+        <div className="glass-dark rounded-[3.5rem] p-10 md:p-14 border border-white/5 shadow-2xl relative overflow-hidden mx-4">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[80px] pointer-events-none -mr-32 -mt-32"></div>
+          
           {(view === 'signup' || view === 'login' || view === 'forgot') ? (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-8 relative z-10 transition-all">
               {!isLogin && !isForgot && (
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Full Name</label>
+                <div className="space-y-4">
+                  <label className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">ARCHITECT IDENTITY</label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter your name"
-                    className="w-full bg-slate-50 border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all"
+                    placeholder="ENTER FULL NAME..."
+                    className="w-full bg-white/5 border border-white/5 px-8 py-6 rounded-3xl text-white font-black text-lg placeholder:text-slate-600 focus:bg-white/10 focus:border-blue-500/50 outline-none transition-all uppercase tracking-tight"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   />
                 </div>
               )}
 
-              <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Email Terminal</label>
+              <div className="space-y-4">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] ml-2">UPLINK TERMINAL</label>
                 <input
                   type="email"
                   required
-                  placeholder="name@cloudvault.sh"
-                  className="w-full bg-slate-50 border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all"
+                  placeholder="MAIL@Vault.SH..."
+                  className="w-full bg-white/5 border border-white/5 px-8 py-6 rounded-3xl text-white font-black text-lg placeholder:text-slate-600 focus:bg-white/10 focus:border-blue-500/50 outline-none transition-all uppercase tracking-tight"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
-                <p className="text-[9px] font-black text-blue-500 uppercase tracking-widest ml-1 mt-1">
-                  1-to-1 Map: Only one mail terminal is supported per active session. To change vaults, re-login is required.
-                </p>
               </div>
 
               {!isForgot && (
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center px-1">
-                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Access Key</label>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center ml-2">
+                    <label className="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em]">ACCESS CIPHER</label>
                     <button 
                       type="button" 
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-[10px] font-black text-blue-600 uppercase tracking-widest"
+                      className="text-[10px] font-black text-blue-400 uppercase tracking-widest"
                     >
-                      {showPassword ? 'Hide' : 'Show'}
+                      {showPassword ? '[ HIDE ]' : '[ SHOW ]'}
                     </button>
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     required
                     placeholder="••••••••••••"
-                    className="w-full bg-slate-50 border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all"
+                    className="w-full bg-white/5 border border-white/5 px-8 py-6 rounded-3xl text-white font-black text-lg placeholder:text-slate-600 focus:bg-white/10 focus:border-blue-500/50 outline-none transition-all tracking-[0.5em]"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
@@ -179,71 +165,70 @@ export function Auth({ onLogin }: AuthProps) {
               )}
 
               {isLogin && (
-                <button 
-                  type="button" 
-                  onClick={() => setView('forgot')}
-                  className="text-[10px] font-black text-blue-600 uppercase tracking-widest w-full text-right hover:text-blue-800"
-                >
-                  Retrieve Access Key
-                </button>
-              )}
-
-              {!isForgot && !isLogin && (
-                <div className="flex items-center gap-4 px-2 mt-4">
-                  <div 
-                    onClick={() => setFormData({ ...formData, agreeToTerms: !formData.agreeToTerms })}
-                    className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all cursor-pointer flex-shrink-0 ${
-                      formData.agreeToTerms ? 'bg-blue-600 border-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-slate-50 border-slate-100 text-transparent'
-                    }`}
+                <div className="text-right">
+                  <button 
+                    type="button" 
+                    onClick={() => setView('forgot')}
+                    className="text-[10px] font-black text-blue-400/60 uppercase tracking-widest hover:text-blue-400 transition-colors uppercase"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <label 
-                    onClick={() => setFormData({ ...formData, agreeToTerms: !formData.agreeToTerms })}
-                    className="text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer select-none leading-tight"
-                  >
-                    Acknowledge Sentinel Sharding Compliance
-                  </label>
+                    Shard Recovery Protocols
+                  </button>
                 </div>
               )}
 
-              <button
-                type="submit"
-                disabled={isLoading || (!isLogin && !isForgot && !formData.agreeToTerms)}
-                className="w-full bg-[#0052A1] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[0.98] disabled:opacity-50 mt-4 group"
-              >
-                {isLoading ? (
-                  <div className="flex items-center justify-center gap-4">
-                    <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-                    <span>Processing...</span>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-center gap-3">
-                    <span>{isForgot ? 'Request Shard' : isLogin ? 'Decrypt & Open' : 'Initialize Vault'}</span>
-                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
-                )}
-              </button>
+              <div className="pt-4">
+                <button
+                  type="submit"
+                  disabled={isLoading || (!isLogin && !isForgot && !formData.agreeToTerms)}
+                  className="btn-neural btn-neural-primary !py-7 !text-[13px] w-full shadow-[0_20px_50px_rgba(37,99,235,0.3)] uppercase"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center justify-center gap-5">
+                      <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                      <span className="tracking-[0.2em]">SYNCHRONIZING...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-4">
+                      <span className="tracking-[0.2em]">{isForgot ? 'BEGIN RECOVERY' : isLogin ? 'DEPLOY CORE' : 'INITIALIZE HUB'}</span>
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                    </div>
+                  )}
+                </button>
+              </div>
+
+              {!isForgot && !isLogin && (
+                 <div className="flex items-start gap-4 px-4 pt-4">
+                    <div 
+                      onClick={() => setFormData({ ...formData, agreeToTerms: !formData.agreeToTerms })}
+                      className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all cursor-pointer flex-shrink-0 mt-0.5 ${
+                        formData.agreeToTerms ? 'bg-blue-600 border-blue-600 text-white shadow-xl shadow-blue-500/20' : 'bg-white/5 border-white/10 text-transparent'
+                      }`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>
+                    </div>
+                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-relaxed cursor-pointer select-none" onClick={() => setFormData({ ...formData, agreeToTerms: !formData.agreeToTerms })}>
+                       ACKNOWLEDGE <span className="text-white">Vault-X</span> ARCHITECTURAL COMPLIANCE & SHARDING ENCRYPTION PROTOCOLS.
+                    </p>
+                 </div>
+              )}
             </form>
           ) : view === 'otp' ? (
-            <div className="space-y-10">
-              <div className="flex justify-between gap-3">
+            <div className="space-y-12 animate-in fade-in zoom-in-95 duration-500 relative z-10">
+              <div className="flex justify-between gap-4">
                 {otp.map((digit, idx) => (
                   <input
                     key={idx}
                     type="text"
                     maxLength={1}
-                    className="w-full h-16 bg-slate-50 border border-slate-100 text-center text-2xl font-black text-slate-900 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all"
+                    className="w-full h-20 bg-white/5 border border-white/10 text-center text-3xl font-black text-white rounded-[1.5rem] focus:bg-white/10 focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all uppercase"
                     value={digit}
                     onChange={(e) => {
+                      const v = e.target.value;
+                      if (v && isNaN(parseInt(v))) return;
                       const newOtp = [...otp];
-                      newOtp[idx] = e.target.value;
+                      newOtp[idx] = v;
                       setOtp(newOtp);
-                      if (e.target.value && idx < 5) {
+                      if (v && idx < 5) {
                         const next = e.target.nextElementSibling as HTMLInputElement;
                         next?.focus();
                       }
@@ -254,64 +239,62 @@ export function Auth({ onLogin }: AuthProps) {
               
               <button
                 onClick={handleVerifyOTP}
-                className="w-full bg-[#0052A1] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[0.98]"
+                disabled={isLoading || otp.some(d => !d)}
+                className="btn-neural btn-neural-primary !py-7 w-full uppercase text-[13px]"
               >
-                Validate Shard Entry
+                {isLoading ? 'VERIFYING KEY...' : 'VALIDATE NODE ACCESS'}
               </button>
             </div>
           ) : (
-            <div className="space-y-10 text-center">
-              <div className="relative inline-block group">
-                <div className="absolute inset-0 bg-blue-500 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+            <div className="space-y-12 text-center animate-in fade-in zoom-in-95 duration-500 relative z-10">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-blue-500 rounded-[3.5rem] blur-[60px] opacity-20 animate-neural-pulse"></div>
                 {isGenerating ? (
-                  <div className="w-48 h-48 bg-slate-50 rounded-[3rem] flex flex-col items-center justify-center gap-4 border border-slate-100 relative z-10">
-                     <div className="w-12 h-12 border-[5px] border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Decoding Neural ID</p>
+                  <div className="w-56 h-56 bg-white/5 rounded-[3.5rem] flex flex-col items-center justify-center gap-6 border border-white/10 relative z-10 backdrop-blur-xl">
+                     <div className="w-16 h-16 border-4 border-white/5 border-t-blue-500 rounded-full animate-spin"></div>
+                     <p className="text-[10px] font-black text-blue-400 uppercase tracking-[0.4em]">DECODING NEURAL ID</p>
                   </div>
                 ) : (
                   <div className="relative z-10">
                     <img 
                       src={generatedAvatar || ""} 
-                      className="w-48 h-48 rounded-[3rem] object-cover border-4 border-white shadow-2xl group-hover:scale-105 transition-transform duration-700"
+                      className="w-56 h-56 rounded-[3.5rem] object-cover border-4 border-white/20 shadow-[0_40px_80px_rgba(0,0,0,0.5)] transform hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute -bottom-4 -right-4 w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-xl ring-4 ring-white animate-bounce">
-                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <div className="absolute -bottom-6 -right-6 w-20 h-20 bg-emerald-600 rounded-[1.75rem] flex items-center justify-center text-white shadow-2xl ring-8 ring-[#1A2333] animate-bounce">
+                      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>
                     </div>
                   </div>
                 )}
               </div>
 
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-slate-900 tracking-tighter">Identity Verified</h3>
-                <p className="text-slate-400 font-bold text-xs uppercase tracking-widest leading-relaxed">Your neural fingerprint is encrypted.</p>
+              <div className="space-y-4">
+                <h3 className="text-4xl font-black text-white tracking-tighter uppercase uppercase">Neural ID Verified</h3>
+                <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em] max-w-xs mx-auto uppercase">Security Cluster fully synchronized with biometric fingerprint.</p>
               </div>
 
               <button
                 onClick={handleFinalize}
-                className="w-full bg-[#0052A1] text-white py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[1.02]"
+                className="btn-neural btn-neural-primary !py-7 w-full uppercase text-[13px] shadow-2xl shadow-blue-600/20"
               >
-                Uplink to Vault
+                DEPLOY VAULT PROTOCOLS
               </button>
             </div>
           )}
         </div>
 
-        {/* Bottom Switch */}
-        <div className="mt-10 text-center">
+        {/* Global Switch & Legal Relay */}
+        <div className="mt-12 text-center relative z-10">
            <button 
              onClick={() => setView(isLogin ? 'signup' : 'login')}
-             className="px-8 py-4 bg-white/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-sm text-[11px] font-black text-slate-500 uppercase tracking-widest hover:bg-white hover:text-blue-600 transition-all"
+             className="px-12 py-5 bg-white/5 hover:bg-white/10 text-[11px] font-black text-slate-400 hover:text-white uppercase tracking-[0.4em] transition-all rounded-3xl border border-white/5 backdrop-blur-md uppercase"
            >
-             {isLogin ? "Terminate & Create New Node" : "Existing Node? Authenticate"}
+             {isLogin ? "TERMINATE NODES • INITIALIZE NEW" : "EXISTING NODE? AUTHENTICATE"}
            </button>
         </div>
 
-        {/* Global Security Disclaimer */}
-        <div className="mt-12 flex items-center justify-center gap-4 text-[10px] font-black text-slate-300 uppercase tracking-[0.3em] opacity-50">
-           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-           <p>End-to-End Encrypted Node • Sentinel OS v4</p>
+        <div className="mt-20 flex items-center justify-center gap-6 opacity-30">
+           <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(59,130,246,1)]"></div>
+           <p className="text-[10px] font-black text-white uppercase tracking-[0.8em]">VAULT OS v4.2 STABLE</p>
         </div>
       </div>
     </div>

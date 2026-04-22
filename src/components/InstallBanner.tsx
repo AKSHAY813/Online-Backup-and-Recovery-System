@@ -75,7 +75,7 @@ export function InstallBanner() {
           </div>
           <div>
             <p className="font-black text-xs uppercase tracking-widest">Protocol Success</p>
-            <p className="text-sm font-bold opacity-90">Sentinel Node Deployed Successfully</p>
+            <p className="text-sm font-bold opacity-90">Vault Node Deployed Successfully</p>
           </div>
         </div>
       </div>
@@ -99,14 +99,14 @@ export function InstallBanner() {
               </svg>
             </div>
             <h2 className="text-3xl font-black text-white mb-1 tracking-tighter uppercase">CloudVault</h2>
-            <p className="text-blue-200 text-[10px] font-black uppercase tracking-[0.3em]">Sentinel Infrastructure</p>
+            <p className="text-blue-200 text-[10px] font-black uppercase tracking-[0.3em]">Vault Infrastructure</p>
           </div>
 
           <div className="p-10">
             <div className="text-center mb-10">
               <h3 className="text-xl font-black text-slate-900 tracking-tighter uppercase mb-3">Install Node</h3>
               <p className="text-slate-400 text-xs font-bold leading-relaxed px-4">
-                Integrate Sentinel OS directly into your environment for maximum shard throughput and offline restoration.
+                Integrate Vault OS directly into your environment for maximum shard throughput and offline restoration.
               </p>
             </div>
 

@@ -75,7 +75,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="space-y-12 pb-16 relative">
+    <div className="space-y-8 md:space-y-12 pb-16 relative">
       {/* Background Mesh Visual */}
       <div className="absolute top-0 right-0 -z-10 opacity-20 pointer-events-none overflow-hidden h-[500px]">
          <div className="w-[800px] h-[800px] bg-indigo-500/10 blur-[120px] rounded-full -mr-96 -mt-96 animate-pulse"></div>
@@ -83,50 +83,47 @@ export function Dashboard() {
 
       {/* Status Header */}
       <div className="px-2 animate-slide-up">
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-            <div className="flex items-center gap-2 px-4 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-               <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mb-8">
+            <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+               <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-neural-pulse"></span>
                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em]">Mesh Guard Core Active</span>
             </div>
-            <div className="flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
-               <span className="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em]">Neural Sharding v4.2 Agent</span>
-            </div>
-            <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-slate-100 border border-slate-200 rounded-full">
-               <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Avg Mesh Latency: 12ms</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full">
+               <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em]">Neural Engine v4.2 Stable</span>
             </div>
         </div>
         
-        <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-[0.9] mb-10">
-          AI Mesh System<br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-blue-600 to-emerald-600">Cognitive Protection.</span>
+        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] text-center md:text-left mb-8 md:mb-14">
+          Neural Mesh<br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500">Cognitive Vault.</span>
         </h1>
         
-        {/* Advanced AI Insight Section - CAROUSEL */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-4">
-           <div className="lg:col-span-2 glass-dark rounded-[3rem] p-10 text-white relative overflow-hidden group shadow-2xl">
-              <div className="absolute top-4 right-10 bg-indigo-500/20 px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border border-indigo-500/30">AI Predictive Insight</div>
+        {/* Advanced AI Insight Section */}
+         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-6">
+           <div className="lg:col-span-2 glass-dark rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-12 text-white relative overflow-hidden group shadow-2xl">
+              <div className="absolute top-6 right-8 md:right-12 bg-blue-500/20 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 backdrop-blur-md">Predictive Lifecycle</div>
               <div className="relative z-10">
-                 <div className="flex items-center gap-6 mb-8">
-                    <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-[1.5rem] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                       <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                 <div className="flex items-center gap-5 md:gap-8 mb-8 md:mb-12">
+                    <div className="w-14 h-14 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl md:rounded-[2rem] flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-500">
+                       <svg className="w-7 h-7 md:w-10 md:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
                     </div>
                     <div>
-                       <h3 className="text-2xl font-black tracking-tight leading-none">Neural Prediction Engine</h3>
-                       <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Active Asset Analysis Cycle</p>
+                       <h3 className="text-2xl md:text-4xl font-black tracking-tighter leading-none mb-2 md:mb-3">Neural Monitor</h3>
+                       <p className="text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.3em]">Active Asset Cycle Analysis</p>
                     </div>
                  </div>
                  
-                 <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     {aiInsights.map((insight) => (
-                       <div key={insight.id} className="bg-white/5 border border-white/5 p-5 rounded-2xl flex items-center justify-between group/insight hover:bg-white/10 transition-all">
-                          <div className="flex items-center gap-5">
-                             <div className={`w-2 h-2 rounded-full ${insight.urgency === 'High' ? 'bg-rose-500' : insight.urgency === 'Medium' ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
+                       <div key={insight.id} className="bg-white/5 border border-white/5 p-4 md:p-5 rounded-xl md:rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group/insight hover:bg-white/10 transition-all">
+                          <div className="flex items-center gap-4 md:gap-5">
+                             <div className={`w-2 h-2 rounded-full shrink-0 ${insight.urgency === 'High' ? 'bg-rose-500' : insight.urgency === 'Medium' ? 'bg-amber-500' : 'bg-emerald-500'}`}></div>
                              <div>
-                                <p className="font-black text-sm text-slate-100 uppercase tracking-tight">{insight.fileName}</p>
-                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{insight.reason}</p>
+                                <p className="font-black text-xs md:text-sm text-slate-100 uppercase tracking-tight">{insight.fileName}</p>
+                                <p className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase tracking-widest">{insight.reason}</p>
                              </div>
                           </div>
-                          <button className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg active:scale-95">{insight.action}</button>
+                          <button className="w-full sm:w-auto px-6 py-2 md:py-2.5 bg-indigo-600 hover:bg-indigo-500 rounded-lg md:rounded-xl text-[9px] md:text-[10px] font-black uppercase tracking-widest text-white transition-all shadow-lg active:scale-95">{insight.action}</button>
                        </div>
                     ))}
                  </div>
@@ -134,200 +131,204 @@ export function Dashboard() {
            </div>
 
            {/* Optimization Gauge */}
-           <div className="sentinel-card p-10 bg-white border border-slate-100 flex flex-col justify-between overflow-hidden relative">
-              <div className="absolute -bottom-8 -right-8 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl"></div>
+           <div className="Vault-card p-6 md:p-12 flex flex-col justify-between overflow-hidden group/opt relative">
+              <div className="absolute -bottom-10 -right-10 w-56 h-56 bg-emerald-500/10 rounded-full blur-3xl group-hover/opt:scale-125 transition-transform duration-700"></div>
               <div>
-                 <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase">Storage Efficiency</h3>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">AI Deduplication Gains</p>
+                 <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tighter uppercase mb-1">Efficiency</h3>
+                 <p className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">Neural Compression Gains</p>
               </div>
-              <div className="my-10 text-center">
-                 <div className="text-6xl font-black text-emerald-600 tracking-tighter leading-none mb-2">{optimization?.efficiency}</div>
-                 <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Efficiency Metric</p>
+              <div className="my-8 md:my-14 text-center">
+                 <div className="text-6xl md:text-8xl font-black text-slate-900 tracking-tighter leading-none mb-3 group-hover/opt:scale-110 transition-transform duration-500">{optimization?.efficiency}</div>
+                 <p className="text-[10px] md:text-xs font-black text-emerald-600 uppercase tracking-[0.2em] bg-emerald-50 self-center px-4 py-1 rounded-full inline-block">Pro Efficiency Stable</p>
               </div>
-              <div className="space-y-4">
-                 <div className="flex justify-between items-center text-sm">
-                    <span className="font-black text-slate-400 uppercase tracking-widest text-[9px]">Saved Space</span>
-                    <span className="font-black text-slate-900">{optimization?.savedSpace}</span>
+              <div className="space-y-6">
+                 <div className="flex justify-between items-center px-1">
+                    <span className="font-black text-slate-400 uppercase tracking-widest text-[10px]">Saved Space</span>
+                    <span className="font-black text-slate-900 text-sm">{optimization?.savedSpace}</span>
                  </div>
-                 <div className="h-2 bg-slate-50 rounded-full overflow-hidden p-0.5">
-                    <div className="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full w-[92%]"></div>
+                 <div className="neural-progress">
+                    <div className="neural-progress-bar w-[92%]"></div>
                  </div>
-                 <p className="text-[8px] font-bold text-slate-400 text-center uppercase tracking-widest leading-relaxed">AI detected and consolidated {optimization?.avoidedDuplicates} duplicate nodes</p>
+                 <p className="text-[9px] md:text-[10px] font-bold text-slate-400 text-center uppercase tracking-widest leading-relaxed">System protected across {optimization?.avoidedDuplicates} neural intersections</p>
               </div>
            </div>
         </div>
 
-        <div className="flex items-center gap-6 mt-10">
-           <button 
-             onClick={() => setShowVaultBrowser(true)}
-             className="flex items-center gap-3 px-8 py-5 bg-[#0052A1] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-blue-500/40 hover:bg-blue-800 transition-all hover:scale-105 active:scale-95 group"
-           >
-              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-              </svg>
-              Browse Internet Vault
-           </button>
-           <button 
-             onClick={() => setShowDeviceScanner(true)}
-             className="flex items-center gap-3 px-8 py-5 bg-white text-slate-600 rounded-2xl font-black text-sm uppercase tracking-widest border border-slate-200 hover:bg-slate-50 transition-all hover:border-slate-300"
-           >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              Scan local device
-           </button>
-        </div>
-      </div>
+          <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 md:gap-8 mt-10 md:mt-16">
+             <button 
+               onClick={() => setShowVaultBrowser(true)}
+               className="btn-neural btn-neural-primary w-full sm:w-auto flex items-center justify-center gap-4 group"
+             >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-white/10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                   <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                </div>
+                <span>Sync Internet Vault</span>
+             </button>
+             <button 
+               onClick={() => setShowDeviceScanner(true)}
+               className="btn-neural bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 w-full sm:w-auto flex items-center justify-center gap-4"
+             >
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-slate-50 rounded-xl flex items-center justify-center">
+                   <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <span>Analyze Node Files</span>
+             </button>
+          </div>
+       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
-        {/* Vault Capacity */}
-        <div className="sentinel-card p-10 flex flex-col justify-between min-h-[420px] group/card">
-           <div className="flex items-center justify-between mb-10">
-              <div>
-                 <h3 className="text-2xl font-black text-slate-900 tracking-tight">Vault Capacity</h3>
-                 <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-1.5">Pro Sharding Protocol</p>
-              </div>
-              <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner group-hover/card:scale-110 transition-transform duration-500">
-                 <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13h-8z" />
-                 </svg>
-              </div>
-           </div>
-
-           <div className="space-y-8">
-              <div className="flex items-baseline gap-3">
-                 <span className={`text-7xl font-black tracking-tighter tabular-nums leading-none ${storagePercent >= 100 ? 'text-red-600' : 'text-slate-900'}`}>
-                   {stats?.used || '0.0'}
-                 </span>
-                 <div className="flex flex-col">
-                   <span className={`text-xl font-black leading-none ${storagePercent >= 100 ? 'text-red-500' : 'text-indigo-600'}`}>GB</span>
-                   <span className={`text-sm font-bold mt-1 uppercase tracking-widest ${storagePercent >= 100 ? 'text-red-400' : 'text-slate-400'}`}>Used</span>
-                 </div>
-                 <span className="text-slate-400 font-bold ml-auto text-sm uppercase tracking-widest">of {stats?.total}GB Vault</span>
-              </div>
-              
-              <div className={`sentinel-progress h-3.5 ring-4 ${storagePercent >= 100 ? 'bg-red-100 ring-red-50' : 'bg-slate-100 ring-slate-50'}`}>
-                 <div 
-                   className={storagePercent >= 100 ? "h-full bg-red-600 shadow-[0_0_15px_rgba(220,38,38,0.5)] transition-all" : "h-full bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full transition-all duration-700"}
-                   style={{ width: `${Math.min(storagePercent, 100)}%` }}
-                 ></div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:border-indigo-200 transition-all shadow-sm">
-                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Cloud Files</span>
-                     <span className="text-2xl font-black text-slate-800 tracking-tight">{stats?.firebaseFileCount || 0} Synced</span>
-                  </div>
-                  <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:border-indigo-200 transition-all shadow-sm">
-                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2">Neural Nodes</span>
-                     <span className="text-2xl font-black text-indigo-600 tracking-tight">{liveNodes.length} Verified</span>
-                  </div>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-10">
+         {/* Vault Capacity */}
+         <div className="Vault-card p-6 md:p-12 flex flex-col justify-between shard-card group/card min-h-[440px]">
+            <div className="flex items-center justify-between mb-10 md:mb-14">
+               <div>
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">Capacity</h3>
+                  <p className="text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.3em] mt-2">Active Sharding Protocol</p>
+               </div>
+               <div className="w-14 h-14 md:w-16 md:h-16 bg-blue-50 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center text-blue-600 shadow-inner group-hover/card:scale-110 transition-all duration-500">
+                  <svg className="w-7 h-7 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20">
+                     <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13h-8z" />
+                  </svg>
                </div>
             </div>
-        </div>
 
-        {/* Secure Mesh Nodes */}
-        <div className="sentinel-card p-10 flex flex-col min-h-[420px] bg-[#0F172A] text-white">
-           <div className="flex items-center justify-between mb-10">
-              <h3 className="text-2xl font-black tracking-tight">Active Neural Mesh</h3>
-              <div className="flex items-center gap-2 bg-emerald-500/10 px-4 py-2 rounded-xl text-emerald-400 border border-emerald-500/20">
-                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                 <span className="text-[10px] font-black uppercase tracking-widest">P2P Encryption Active</span>
-              </div>
-           </div>
-           
-           <div className="space-y-6 flex-1">
-               {liveNodes.map((node, i) => (
-                <div key={node.id} className="flex items-center justify-between p-5 rounded-[1.75rem] bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-default group/node">
-                   <div className="flex items-center gap-5">
-                      <div className="w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl group-hover/node:rotate-6 transition-all">
-                         {i === 0 ? (
-                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                         ) : i === 1 ? (
-                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-                         ) : (
-                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
-                         )}
-                      </div>
-                      <div>
-                         <p className="font-black text-sm tracking-tight leading-none mb-2 uppercase">{node.name}</p>
-                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black text-indigo-400 tracking-widest">{node.latency} Latency</span>
-                            <span className="w-1 h-1 bg-white/10 rounded-full"></span>
-                            <span className="text-[10px] font-black text-slate-500 tracking-widest">Load: {node.load}</span>
-                         </div>
-                      </div>
+            <div className="space-y-8 md:space-y-12">
+               <div className="flex flex-wrap items-baseline gap-3 md:gap-4">
+                  <span className={`text-6xl md:text-8xl font-black tracking-[-0.05em] tabular-nums leading-none ${storagePercent >= 100 ? 'text-red-600' : 'text-slate-900'}`}>
+                    {stats?.used || '0.0'}
+                  </span>
+                  <div className="flex flex-col">
+                    <span className={`text-xl md:text-3xl font-black leading-none ${storagePercent >= 100 ? 'text-red-500' : 'text-blue-600'}`}>GB</span>
+                    <span className={`text-[10px] md:text-xs font-black mt-2 uppercase tracking-[0.3em] ${storagePercent >= 100 ? 'text-red-400' : 'text-slate-400'}`}>ALLOCATED</span>
+                  </div>
+                  <span className="text-slate-400 font-black ml-auto text-[10px] md:text-xs uppercase tracking-[0.3em]">TOTAL: {stats?.total}GB</span>
+               </div>
+               
+               <div className="neural-progress">
+                  <div 
+                    className={`neural-progress-bar ${storagePercent >= 100 ? 'from-rose-500 to-red-600' : ''}`}
+                    style={{ width: `${Math.min(storagePercent, 100)}%` }}
+                  ></div>
+               </div>
+
+               <div className="grid grid-cols-2 gap-4 md:gap-8">
+                   <div className="glass-card p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border-slate-100 group/item hover:border-blue-200 transition-all">
+                      <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 md:mb-3">Synced Files</span>
+                      <span className="text-xl md:text-3xl font-black text-slate-900 tracking-tighter group-hover/item:text-blue-600 transition-colors">{stats?.firebaseFileCount || 0}</span>
                    </div>
-                   <div className="text-right">
-                      <span className="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full uppercase tracking-widest">{node.status}</span>
+                   <div className="glass-card p-5 md:p-8 rounded-[1.5rem] md:rounded-[2rem] border-slate-100 group/item hover:border-blue-200 transition-all">
+                      <span className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block mb-2 md:mb-3">Mesh Active</span>
+                      <span className="text-xl md:text-3xl font-black text-slate-900 tracking-tighter group-hover/item:text-blue-600 transition-colors">{liveNodes.length}</span>
                    </div>
                 </div>
-              ))}
-           </div>
-           
-           <button className="mt-8 w-full py-5 bg-white/5 border border-white/5 rounded-3xl text-xs font-black text-slate-400 uppercase tracking-[0.3em] hover:bg-white hover:text-slate-900 transition-all active:scale-[0.98]">
-              Expand Neural Mesh
-           </button>
-        </div>
+             </div>
+         </div>
+
+         {/* Secure Mesh Nodes */}
+         <div className="Vault-card p-6 md:p-12 flex flex-col min-h-[440px] bg-slate-900 text-white relative overflow-hidden group/mesh">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/5 rounded-full blur-[100px] group-hover/mesh:bg-blue-600/10 transition-colors duration-1000"></div>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 md:mb-14 relative z-10">
+               <div>
+                  <h3 className="text-2xl md:text-3xl font-black tracking-tighter">Live Mesh</h3>
+                  <p className="text-slate-400 font-black text-[10px] md:text-xs uppercase tracking-[0.3em] mt-2">P2P Sharding Active</p>
+               </div>
+               <div className="self-start sm:self-auto flex items-center gap-2 bg-emerald-500/10 px-5 py-2.5 rounded-2xl text-emerald-400 border border-emerald-500/20 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-neural-pulse"></span>
+                  <span className="text-[10px] font-black uppercase tracking-widest">E2E CRYPTO ENABLED</span>
+               </div>
+            </div>
+            
+            <div className="space-y-4 md:space-y-6 flex-1 relative z-10">
+                {liveNodes.map((node, i) => (
+                 <div key={node.id} className="flex items-center justify-between p-5 md:p-6 rounded-[1.75rem] md:rounded-[2.25rem] bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all cursor-default group/node">
+                    <div className="flex items-center gap-5 md:gap-7">
+                       <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-600 text-white rounded-2xl md:rounded-[1.75rem] flex items-center justify-center shadow-2xl group-hover/node:bg-blue-500 transition-colors">
+                          {i === 0 ? (
+                             <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                          ) : i === 1 ? (
+                             <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                          ) : (
+                             <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                          )}
+                       </div>
+                       <div>
+                          <p className="font-black text-sm md:text-lg tracking-tight leading-none mb-2 uppercase">{node.name}</p>
+                          <div className="flex items-center gap-3">
+                             <span className="text-[10px] md:text-xs font-black text-blue-400 tracking-widest">{node.latency}</span>
+                             <span className="w-1.5 h-1.5 bg-white/10 rounded-full"></span>
+                             <span className="text-[10px] md:text-xs font-black text-slate-500 tracking-widest uppercase">Load: {node.load}</span>
+                          </div>
+                       </div>
+                    </div>
+                    <div className="text-right">
+                       <span className="text-[9px] md:text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-4 py-1.5 rounded-full uppercase tracking-widest border border-emerald-500/20">Active</span>
+                    </div>
+                 </div>
+               ))}
+            </div>
+            
+            <button className="mt-8 md:mt-10 w-full py-5 md:py-6 bg-white/5 border border-white/5 rounded-[1.75rem] md:rounded-[2.25rem] text-[11px] md:text-xs font-black text-slate-400 uppercase tracking-[0.4em] hover:bg-white hover:text-slate-900 transition-all active:scale-[0.98]">
+               Sync New Node
+            </button>
+         </div>
       </div>
 
       {/* Recent Neural Syncs */}
-      <div className="sentinel-card overflow-hidden">
-        <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <div className="Vault-card overflow-hidden">
+        <div className="px-6 md:px-10 py-6 md:py-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50">
            <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Global Mesh Activity</h3>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Real-time cryptographic logs</p>
+              <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Global Mesh Activity</h3>
+              <p className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Real-time cryptographic logs</p>
            </div>
-           <button className="px-6 py-2.5 text-[10px] font-black text-indigo-600 border border-indigo-100 uppercase tracking-[0.2em] hover:bg-indigo-50 rounded-xl transition-all">Audit Logs</button>
+           <button className="self-start sm:self-auto px-6 py-2.5 text-[9px] md:text-[10px] font-black text-indigo-600 border border-indigo-100 uppercase tracking-[0.2em] hover:bg-indigo-50 rounded-xl transition-all">Audit Logs</button>
         </div>
         <div className="divide-y divide-slate-100">
            {backups.length > 0 ? (
                backups.slice(0, 5).map((item, i) => (
                  <div 
-                   key={item.id} 
-                   onClick={() => item.url && window.open(item.url, '_blank')}
-                   className={`px-10 py-6 flex items-center justify-between group hover:bg-indigo-50/30 transition-all ${item.url ? 'cursor-pointer' : ''}`}
+                    key={item.id} 
+                    onClick={() => item.url && window.open(item.url, '_blank')}
+                    className={`px-6 md:px-10 py-5 md:py-6 flex items-center justify-between group hover:bg-indigo-50/30 transition-all ${item.url ? 'cursor-pointer' : ''}`}
                  >
-                    <div className="flex items-center gap-6">
-                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
+                    <div className="flex items-center gap-4 md:gap-6">
+                       <div className={`w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center shadow-sm ${
                           item.type === 'folder' ? 'bg-amber-100/50 text-amber-600' : 
                           item.type === 'web' || item.url ? 'bg-indigo-100/50 text-indigo-600' : 'bg-blue-100/50 text-blue-600'
                        } group-hover:scale-110 transition-transform`}>
                           {item.type === 'folder' ? (
-                            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
+                            <svg className="w-5 h-5 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>
                           ) : item.type === 'web' || item.url ? (
-                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                            <svg className="w-5 h-5 md:w-7 md:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 105.656 5.656l1.102-1.101" /></svg>
                           ) : (
-                            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                            <svg className="w-5 h-5 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
                           )}
                        </div>
                        <div>
-                          <div className="flex items-center gap-2 mb-2">
-                             <p className={`font-black text-lg tracking-tight uppercase ${item.url ? 'text-indigo-900 group-hover:text-indigo-600' : 'text-slate-900'}`}>{item.name}</p>
+                          <div className="flex items-center gap-2 mb-1 md:mb-2">
+                             <p className={`font-black text-sm md:text-lg tracking-tight uppercase ${item.url ? 'text-indigo-900 group-hover:text-indigo-600' : 'text-slate-900'}`}>{item.name}</p>
                           </div>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                            {item.url ? 'Cloud Linked' : 'Mesh Distributed'} • {new Date(item.lastBackup).toLocaleTimeString()}
+                          <p className="text-[8px] md:text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                            {item.url ? 'Cloud' : 'Mesh'} • {new Date(item.lastBackup).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </p>
                        </div>
                     </div>
-                    <div className="text-right flex flex-col items-end">
-                       <p className="text-base font-black text-slate-900 leading-none mb-2">{item.size}</p>
-                       <span className={`sentinel-badge ${item.url ? 'bg-indigo-50 text-indigo-600 border border-indigo-200' : (i === 0 ? 'sentinel-badge-green' : 'sentinel-badge-blue')}`}>
-                          {item.url ? 'Internet Shard' : (i === 0 ? 'Verified' : 'Healthy')}
+                    <div className="text-right flex flex-col items-end shrink-0">
+                       <p className="text-sm md:text-base font-black text-slate-900 leading-none mb-1.5 md:mb-2">{item.size}</p>
+                       <span className={`px-2 py-0.5 md:px-3 md:py-1 rounded-md md:rounded-lg text-[8px] md:text-[10px] font-extrabold uppercase tracking-widest ${item.url ? 'bg-indigo-50 text-indigo-600 border border-indigo-200' : (i === 0 ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-blue-50 text-blue-600 border border-blue-200')}`}>
+                          {item.url ? 'Web' : (i === 0 ? 'Verified' : 'Healthy')}
                        </span>
                     </div>
                  </div>
                ))
            ) : (
-              <div className="p-20 text-center text-slate-300">No active mesh transmissions.</div>
+               <div className="p-20 text-center text-slate-300">No active mesh transmissions.</div>
            )}
         </div>
       </div>
 
       {/* Floating Advanced Controller */}
-      <div className="fixed bottom-24 right-10 z-40 md:bottom-12">
-         <button className="w-20 h-20 bg-indigo-600 text-white rounded-[2rem] shadow-[0_20px_40px_rgba(79,70,229,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group ring-8 ring-indigo-50 border border-indigo-400/20">
-            <svg className="w-10 h-10 group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className="fixed bottom-28 right-6 z-40 md:bottom-12 md:right-10">
+         <button className="w-16 h-16 md:w-20 md:h-20 bg-indigo-600 text-white rounded-2xl md:rounded-[2rem] shadow-[0_20px_40px_rgba(79,70,229,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all group ring-8 ring-indigo-50/50 border border-indigo-400/20">
+            <svg className="w-8 h-8 md:w-10 md:h-10 group-hover:rotate-180 transition-transform duration-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
             </svg>
          </button>
@@ -349,7 +350,7 @@ export function Dashboard() {
               <div className="p-8 overflow-y-auto flex-1 bg-white">
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {backups.filter(b => b.url).length > 0 ? backups.filter(b => b.url).map((file) => (
-                       <div key={file.id} onClick={() => file.url && window.open(file.url, '_blank')} className="sentinel-card p-6 cursor-pointer group hover:border-[#0052A1]">
+                       <div key={file.id} onClick={() => file.url && window.open(file.url, '_blank')} className="Vault-card p-6 cursor-pointer group hover:border-[#0052A1]">
                           <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
                           </div>
@@ -432,12 +433,12 @@ export function Dashboard() {
       )}
 
       {/* Side Terminal Peek (Only on Desktop) */}
-      <div className="hidden 2xl:block fixed top-1/2 -translate-y-1/2 left-8 w-64 sentinel-card p-6 bg-slate-900 text-emerald-400 font-mono text-[9px] border border-slate-800 shadow-2xl opacity-60 hover:opacity-100 transition-opacity">
+      <div className="hidden 2xl:block fixed top-1/2 -translate-y-1/2 left-8 w-64 Vault-card p-6 bg-slate-900 text-emerald-400 font-mono text-[9px] border border-slate-800 shadow-2xl opacity-60 hover:opacity-100 transition-opacity">
          <p className="border-b border-white/5 pb-2 mb-2 text-slate-500 uppercase tracking-widest font-black">System Feed</p>
          <p className="mb-1 text-white/20">{'>'} CPU_LOAD: 12%</p>
          <p className="mb-1">{'>'} RTDB: CONNECTED</p>
          <p className="mb-1">{'>'} SHARDING: ACTIVE</p>
-         <p className="mb-1">{'>'} USER: {(() => { try { const u = localStorage.getItem('cloudvault_user'); return u ? JSON.parse(u).name : 'SENTINEL'; } catch { return 'SENTINEL'; } })()}</p>
+         <p className="mb-1">{'>'} USER: {(() => { try { const u = localStorage.getItem('cloudvault_user'); return u ? JSON.parse(u).name : 'Vault'; } catch { return 'Vault'; } })()}</p>
          <p className="animate-pulse">{'>'} _</p>
       </div>
     </div>

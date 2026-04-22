@@ -30,7 +30,7 @@ export function ProfileModal({ isOpen, onClose, user, onSave }: ProfileModalProp
         <div className="px-10 py-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/30">
           <div>
             <h3 className="text-3xl font-black text-slate-900 tracking-tighter">Node Settings</h3>
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Configure your active sentinel profile</p>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Configure your active Vault profile</p>
           </div>
           <button 
             onClick={onClose}

@@ -73,16 +73,16 @@ export function Schedule() {
   return (
     <div className="space-y-12 animate-slide-up font-['Outfit'] pb-20">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-        <div>
-          <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase mb-2">Orchestration</h2>
-          <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em]">Autonomous shard synchronization</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 md:gap-8">
+        <div className="text-center md:text-left">
+          <h2 className="text-3xl md:text-4xl font-black text-slate-900 tracking-tighter uppercase mb-1 md:mb-2 text-center md:text-left">Temporal Nodes</h2>
+          <p className="text-slate-400 font-bold text-[10px] md:text-xs uppercase tracking-[0.2em] text-center md:text-left">Autonomous shard synchronization</p>
         </div>
         <button
           onClick={() => setShowNewSchedule(true)}
-          className="px-10 py-5 bg-[#0052A1] text-white rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[0.98] flex items-center gap-4 group"
+          className="w-full md:w-auto px-8 md:px-10 py-4 md:py-5 bg-[#0052A1] text-white rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-[0.2em] shadow-2xl shadow-blue-500/30 hover:bg-blue-800 transition-all active:scale-[0.98] flex items-center justify-center gap-4 group"
         >
-          <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 md:w-5 md:h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
           Deploy Protocol
@@ -91,28 +91,29 @@ export function Schedule() {
 
       {/* New Schedule Overlay */}
       {showNewSchedule && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-8 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-300">
-           <div className="bg-white/90 backdrop-blur-2xl rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up border border-white/50 p-12">
-              <h3 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-2">Protocol Configuration</h3>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-10">Define new temporal sync window</p>
+        <div className="fixed inset-0 z-[100] flex items-end md:items-center justify-center p-0 md:p-8 bg-slate-900/60 backdrop-blur-xl animate-in fade-in duration-300">
+           <div className="bg-white/95 backdrop-blur-2xl rounded-t-[2.5rem] md:rounded-[3rem] shadow-2xl w-full max-w-2xl overflow-hidden animate-slide-up md:border md:border-white/50 p-8 md:p-12 relative">
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-1 bg-slate-200 rounded-full md:hidden"></div>
+              <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter uppercase mb-2 text-center md:text-left mt-4 md:mt-0">Protocol Configuration</h3>
+              <p className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 md:mb-10 text-center md:text-left">Define new temporal sync window</p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                <div className="space-y-2 col-span-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Protocol Designation</label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mb-10">
+                <div className="space-y-2 md:col-span-2">
+                  <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Protocol Designation</label>
                   <input
                     type="text"
                     value={newSchedule.name}
                     onChange={(e) => setNewSchedule({ ...newSchedule, name: e.target.value })}
-                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all uppercase"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-4 md:py-5 rounded-xl md:rounded-2xl text-slate-900 font-bold placeholder:text-slate-300 focus:ring-4 focus:ring-blue-100 focus:border-blue-400 outline-none transition-all uppercase text-sm md:text-base"
                     placeholder="e.g. ALPHA_BACKUP_NODE"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sync Cycle</label>
+                  <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Sync Cycle</label>
                   <select
                     value={newSchedule.frequency}
                     onChange={(e) => setNewSchedule({ ...newSchedule, frequency: e.target.value as BackupSchedule['frequency']})}
-                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none cursor-pointer"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-4 md:py-5 rounded-xl md:rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all appearance-none cursor-pointer text-sm md:text-base"
                   >
                     <option value="hourly">Hourly Cycle</option>
                     <option value="daily">Daily Cycle</option>
@@ -121,26 +122,26 @@ export function Schedule() {
                   </select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Temporal Zero</label>
+                  <label className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Temporal Zero</label>
                   <input
                     type="time"
                     value={newSchedule.time}
                     onChange={(e) => setNewSchedule({ ...newSchedule, time: e.target.value })}
-                    className="w-full bg-white border border-slate-100 px-6 py-5 rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                    className="w-full bg-slate-50 border border-slate-100 px-6 py-4 md:py-5 rounded-xl md:rounded-2xl text-slate-900 font-bold focus:ring-4 focus:ring-blue-100 outline-none transition-all text-sm md:text-base"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex flex-col-reverse sm:flex-row gap-4 mb-4 md:mb-0">
                 <button
                   onClick={() => setShowNewSchedule(false)}
-                  className="flex-1 px-8 py-5 border border-slate-100 text-slate-400 font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-slate-50 transition-all"
+                  className="flex-1 px-8 py-4 md:py-5 border border-slate-100 text-slate-400 font-black text-[10px] md:text-xs uppercase tracking-widest rounded-xl md:rounded-2xl hover:bg-slate-50 transition-all font-bold"
                 >
-                  Abort Mission
+                  Abort
                 </button>
                 <button
                   onClick={addSchedule}
-                  className="flex-1 px-8 py-5 bg-[#0052A1] text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl shadow-blue-500/20 hover:bg-blue-800 transition-all active:scale-[0.98]"
+                  className="flex-1 px-8 py-4 md:py-5 bg-[#0052A1] text-white font-black text-[10px] md:text-xs uppercase tracking-widest rounded-xl md:rounded-2xl shadow-xl shadow-blue-500/20 hover:bg-blue-800 transition-all active:scale-[0.98]"
                 >
                   Confirm Deploy
                 </button>
@@ -154,16 +155,16 @@ export function Schedule() {
         {schedules.map((schedule) => (
           <div
             key={schedule.id}
-            className={`sentinel-card group overflow-hidden transition-all duration-500 ${
+            className={`Vault-card group overflow-hidden transition-all duration-500 ${
               schedule.enabled 
                 ? 'bg-white opacity-100 translate-y-0' 
                 : 'bg-slate-50 opacity-60 grayscale scale-[0.98]'
             }`}
           >
-            <div className={`h-2 w-full ${frequencyColors[schedule.frequency]}`}></div>
-            <div className="p-8">
-               <div className="flex items-start justify-between mb-8">
-                  <div className={`w-14 h-14 ${frequencyColors[schedule.frequency]} rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-500`}>
+            <div className={`h-1.5 md:h-2 w-full ${frequencyColors[schedule.frequency]}`}></div>
+            <div className="p-6 md:p-8">
+               <div className="flex items-start justify-between mb-6 md:mb-8">
+                  <div className={`w-12 h-12 md:w-14 md:h-14 ${frequencyColors[schedule.frequency]} rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-xl group-hover:scale-110 transition-transform duration-500`}>
                     {frequencyIcons[schedule.frequency]}
                   </div>
                   <button
@@ -202,11 +203,11 @@ export function Schedule() {
         ))}
 
         {/* Info Box */}
-        <div className="sentinel-card bg-slate-900 p-8 text-white relative overflow-hidden group border-none lg:col-span-1">
+        <div className="Vault-card bg-slate-900 p-8 text-white relative overflow-hidden group border-none lg:col-span-1">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full -translate-y-16 translate-x-16"></div>
           <h4 className="text-lg font-black tracking-tighter uppercase mb-4 relative z-10">Neural Intelligence</h4>
           <p className="text-xs font-medium text-slate-400 leading-relaxed mb-6 relative z-10">
-            Sentinel OS optimizes sync windows based on global shard availability and local network throughput.
+            Vault OS optimizes sync windows based on global shard availability and local network throughput.
           </p>
           <div className="flex items-center gap-3 relative z-10 text-[10px] font-black text-blue-400 uppercase tracking-widest">
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

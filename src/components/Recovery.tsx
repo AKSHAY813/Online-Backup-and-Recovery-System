@@ -52,7 +52,6 @@ export function Recovery() {
     setTimeout(() => {
         setRestoringVersion(null);
         setInspectingFile(null);
-        alert('Neural restoration complete. Shard deployed to local node.');
     }, 2500);
   };
 
@@ -75,9 +74,9 @@ export function Recovery() {
   if (isLoading) {
     return (
       <div className="space-y-12 animate-pulse pb-32">
-        <div className="h-20 w-3/4 bg-slate-200 rounded-3xl mb-12"></div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-           {[1, 2, 3].map(i => <div key={i} className="h-48 bg-slate-200 rounded-[2.5rem]"></div>)}
+        <div className="h-24 w-3/4 bg-slate-200 rounded-[2rem] mb-12"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+           {[1, 2, 3].map(i => <div key={i} className="h-64 bg-slate-100 rounded-[3rem]"></div>)}
         </div>
       </div>
     );
@@ -88,99 +87,103 @@ export function Recovery() {
   return (
     <div className="space-y-12 animate-slide-up pb-32 relative">
       <div className="px-2">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-           <div>
-              <h1 className="text-6xl font-black text-slate-900 tracking-tighter leading-none mb-4 uppercase">Neural<br /><span className="text-emerald-600">Recovery.</span></h1>
-              <p className="text-slate-400 font-bold text-sm uppercase tracking-[0.2em]">Retrieved Shards from Global Hub</p>
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-12 md:mb-20">
+           <div className="text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start gap-3 mb-6">
+                 <span className="Vault-badge bg-blue-50 text-blue-600 border-blue-100">Recovery Agent v4.2</span>
+                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-neural-pulse"></span>
+              </div>
+              <h1 className="text-5xl md:text-8xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] uppercase">
+                 Neural<br /><span className="text-blue-600">Recovery</span>
+              </h1>
+              <p className="text-slate-400 font-black text-xs md:text-sm uppercase tracking-[0.4em] mt-6 uppercase">Extract Shards from Mesh Hub</p>
            </div>
-           <div className="flex items-center gap-4 bg-white/50 backdrop-blur-md p-2 rounded-3xl border border-slate-100 shadow-sm">
-              <button className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20 transition-all">Verified Assets</button>
-              <button className="px-6 py-3 text-slate-400 hover:text-slate-600 rounded-2xl font-black text-xs uppercase tracking-widest transition-colors font-bold uppercase transition-all">Vault Stream</button>
+           <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-3 rounded-[2rem] border border-blue-50 shadow-2xl self-center md:self-auto">
+              <button className="px-8 py-4 bg-blue-600 text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/30 transition-all">Verified</button>
+              <button className="px-8 py-4 text-slate-400 hover:text-slate-600 rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all uppercase">Vault</button>
            </div>
         </div>
         
         {/* Search Bar */}
-        <div className="relative mb-12 group">
-           <div className="absolute inset-0 bg-emerald-600/5 blur-2xl rounded-[3rem] group-focus-within:bg-emerald-600/10 transition-colors"></div>
-           <div className="relative flex items-center bg-white border border-slate-200 rounded-[2.5rem] px-8 h-20 shadow-premium focus-within:ring-4 focus-within:ring-emerald-100/50 focus-within:border-emerald-400 transition-all">
-              <svg className="w-6 h-6 text-slate-400 group-focus-within:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <div className="relative mb-20 group">
+           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[3rem] blur opacity-20 group-focus-within:opacity-40 transition-opacity"></div>
+           <div className="relative flex items-center bg-white border border-slate-100 rounded-[2.5rem] px-10 h-24 shadow-2xl focus-within:ring-8 focus-within:ring-blue-100/50 transition-all">
+              <svg className="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input 
                  type="text"
-                 placeholder="Search recovered shards for local deployment..."
+                 placeholder="Locate Neural Shard Index..."
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
-                 className="w-full bg-transparent border-none outline-none ml-6 text-lg text-slate-700 placeholder:text-slate-300 font-bold"
+                 className="w-full bg-transparent border-none outline-none ml-8 text-xl text-slate-700 placeholder:text-slate-300 font-extrabold uppercase tracking-tight"
               />
+              <div className="hidden md:flex items-center gap-3">
+                 <span className="bg-slate-50 text-slate-400 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest">CMD+K</span>
+              </div>
            </div>
         </div>
 
-        <div className="flex items-center justify-between mb-8 px-6">
-           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.3em]">Verified Recoveries: {filteredBackups.length} Nodes</p>
-           <div className="flex items-center gap-4">
-              <span className="text-emerald-600 font-black text-[10px] uppercase tracking-[0.3em] font-['Outfit']">{selectedFiles.length} Shards Selected</span>
-           </div>
+        <div className="flex items-center justify-between mb-10 px-8">
+           <p className="text-slate-400 font-black text-[10px] uppercase tracking-[0.4em]">Index Capacity: {filteredBackups.length} Shards</p>
+           {selectedFiles.length > 0 && (
+             <span className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] animate-pulse">{selectedFiles.length} Selected</span>
+           )}
         </div>
 
         {/* File List Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
            {filteredBackups.map((file) => {
              const iconType = getIconForType(file.name, file.type);
+             const isSelected = selectedFiles.includes(file.id);
              return (
               <div 
                  key={file.id} 
                  onClick={() => handleInspectFile(file)}
-                 className={`sentinel-card p-8 flex flex-col justify-between cursor-pointer group transition-all duration-500 hover:border-emerald-400 ${
-                    selectedFiles.includes(file.id) ? 'ring-4 ring-emerald-500/10 border-emerald-500 bg-emerald-50/20' : 'bg-white'
+                 className={`Vault-card p-10 flex flex-col justify-between cursor-pointer group transition-all duration-500 shard-card ${
+                    isSelected ? 'ring-8 ring-blue-100 border-blue-400' : ''
                  }`}
               >
-                 <div className="flex items-start justify-between mb-8">
-                    <div className={`w-16 h-16 rounded-[1.5rem] flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform duration-500 ${
+                 <div className="flex items-start justify-between mb-12">
+                    <div className={`w-20 h-20 rounded-[1.75rem] flex items-center justify-center shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 ${
                        iconType === 'image' ? 'bg-rose-50 text-rose-500' :
                        iconType === 'pdf' ? 'bg-orange-50 text-orange-500' :
-                       iconType === 'doc' ? 'bg-[#0052A1]/10 text-[#0052A1]' : 'bg-emerald-50 text-emerald-600'
+                       iconType === 'doc' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'
                     }`}>
                        {iconType === 'image' && (
-                         <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                         </svg>
+                         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg>
                        )}
-                       {iconType === 'pdf' ? (
-                          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                             <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
-                          </svg>
-                       ) : iconType === 'doc' ? (
-                          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-                             <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
-                          </svg>
-                       ) : null}
+                       {(iconType === 'pdf' || iconType === 'doc') && (
+                         <svg className="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" /></svg>
+                       )}
+                       {iconType === 'archive' && (
+                         <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+                       )}
                     </div>
                     <div 
                         onClick={(e) => toggleFileSelection(file.id, e)}
-                        className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-500 ${
-                        selectedFiles.includes(file.id) ? 'bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-500/40' : 'border-slate-100 bg-white group-hover:border-slate-300'
+                        className={`w-10 h-10 rounded-2xl border-4 flex items-center justify-center transition-all duration-500 ${
+                        isSelected ? 'bg-blue-600 border-blue-600 shadow-2xl shadow-blue-500/40' : 'border-slate-50 bg-slate-50 group-hover:border-blue-100'
                         }`}
                     >
-                       {selectedFiles.includes(file.id) && (
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" />
-                          </svg>
+                       {isSelected && (
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={4} d="M5 13l4 4L19 7" /></svg>
                        )}
                     </div>
                  </div>
                  <div>
-                    <div className="flex items-center gap-2 mb-2">
-                       <p className="font-black text-slate-900 text-xl tracking-tight group-hover:text-emerald-600 transition-colors uppercase truncate leading-none">{file.name}</p>
-                       <span className="px-2 py-0.5 bg-slate-100 text-[8px] font-black rounded uppercase text-slate-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors">{file.versions}v</span>
+                    <div className="flex items-center gap-3 mb-4">
+                       <p className="font-extrabold text-slate-900 text-2xl tracking-tighter uppercase group-hover:text-blue-600 transition-colors truncate">{file.name}</p>
                     </div>
-                    <div className="flex items-center justify-between mt-4">
-                       <div className="flex items-center gap-3">
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">{file.size}</span>
-                          <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
-                          <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest leading-none font-bold">ACTIVE HUB</span>
+                    <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                       <div className="flex items-center gap-4">
+                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{file.size}</span>
+                          <span className="w-1.5 h-1.5 bg-blue-100 rounded-full"></span>
+                          <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest">v{file.versions} Life</span>
                        </div>
-                       <button className="text-[10px] font-black text-emerald-600 uppercase tracking-widest hover:text-emerald-700 transition-colors opacity-0 group-hover:opacity-100">Timeline →</button>
+                       <div className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[9px] font-black uppercase tracking-widest border border-emerald-100">
+                          Active
+                       </div>
                     </div>
                  </div>
               </div>
@@ -189,104 +192,81 @@ export function Recovery() {
         </div>
       </div>
 
-      {/* Point-in-Time Recovery Overlay (Neural Timeline) */}
+      {/* Point-in-Time access Sheet */}
       {inspectingFile && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-end animate-fade-in p-6">
-            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onClick={() => setInspectingFile(null)}></div>
-            <div className="relative w-full max-w-xl h-full bg-[#0F172A] rounded-[3rem] shadow-2xl border border-white/10 flex flex-col overflow-hidden animate-slide-right">
-                <div className="p-10 border-b border-white/5 relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] -mr-32 -mt-32"></div>
-                    <div className="flex justify-between items-start mb-8 relative z-10">
-                        <div>
-                            <span className="sentinel-badge bg-emerald-500/10 text-emerald-400 border-emerald-500/20 mb-4 block w-fit">Point-in-Time Access</span>
-                            <h2 className="text-4xl font-black text-white tracking-tighter leading-none truncate max-w-md">{inspectingFile.name}</h2>
-                            <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-3">Neural history indexed from 3 Global Nodes</p>
+        <div className="fixed inset-0 z-[100] flex items-center justify-end p-6 animate-fade-in">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md" onClick={() => setInspectingFile(null)}></div>
+            <div className="relative w-full max-w-2xl h-full glass-dark rounded-[3.5rem] shadow-2xl border border-white/10 flex flex-col overflow-hidden animate-slide-right">
+                <div className="p-12 md:p-16 border-b border-white/5 relative">
+                    <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[100px] -mr-40 -mt-40"></div>
+                    <div className="flex justify-between items-start mb-12 relative z-10">
+                        <div className="max-w-[80%]">
+                            <span className="Vault-badge bg-blue-500/20 text-blue-400 border-white/10 mb-6 block w-fit">Temporal Shard Access</span>
+                            <h2 className="text-4xl md:text-5xl font-black text-white tracking-[-0.05em] uppercase leading-[0.9]">{inspectingFile.name}</h2>
                         </div>
-                        <button onClick={() => setInspectingFile(null)} className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all border border-white/10">
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                        <button onClick={() => setInspectingFile(null)} className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all border border-white/10">
+                            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4 relative z-10">
-                        <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Versions</p>
-                            <p className="text-2xl font-black text-white">{inspectingFile.versions}</p>
-                        </div>
-                        <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Latest Size</p>
-                            <p className="text-2xl font-black text-emerald-400">{inspectingFile.size}</p>
-                        </div>
-                        <div className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Last Shard</p>
-                            <p className="text-2xl font-black text-white">{new Date(inspectingFile.lastBackup).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</p>
-                        </div>
+                    <div className="grid grid-cols-3 gap-6 relative z-10">
+                        {[
+                           { l: 'Snapshots', v: inspectingFile.versions },
+                           { l: 'Encryption', v: 'AES-256' },
+                           { l: 'Health', v: '99.9%' }
+                        ].map((stat, i) => (
+                          <div key={i} className="bg-white/5 p-6 rounded-3xl border border-white/5 text-center md:text-left">
+                              <p className="text-[9px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">{stat.l}</p>
+                              <p className="text-xl md:text-2xl font-black text-white tracking-tight">{stat.v}</p>
+                          </div>
+                        ))}
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-10 space-y-6">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></div>
-                        <h3 className="text-xs font-black text-emerald-400 uppercase tracking-[0.3em]">Historical Timeline</h3>
+                <div className="flex-1 overflow-y-auto p-12 md:p-16 space-y-10 scrollbar-hide">
+                    <div className="flex items-center gap-4">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full animate-neural-pulse"></div>
+                        <h3 className="text-xs font-black text-blue-400 uppercase tracking-[0.4em] uppercase">Neural Timeline Feed</h3>
                     </div>
 
                     {isVersionsLoading ? (
-                        <div className="space-y-4 animate-pulse">
-                            {[1, 2, 3].map(i => <div key={i} className="h-32 bg-white/5 rounded-[2rem]"></div>)}
+                        <div className="space-y-6 animate-pulse">
+                            {[1, 2, 3].map(i => <div key={i} className="h-40 bg-white/5 rounded-[2.5rem]"></div>)}
                         </div>
                     ) : (
-                        <div className="space-y-4 relative">
-                            {/* Vertical Line */}
-                            <div className="absolute left-6 top-4 bottom-4 w-0.5 bg-gradient-to-b from-emerald-500/50 to-transparent"></div>
-                            
+                        <div className="space-y-6 relative">
+                            <div className="absolute left-8 top-8 bottom-8 w-1 bg-gradient-to-b from-blue-500/50 via-blue-500/20 to-transparent"></div>
                             {versions.map((version, i) => (
-                                <div key={version.id} className={`relative pl-12 group ${restoringVersion === version.id ? 'opacity-50 pointer-events-none' : ''}`}>
-                                    {/* Timeline Node */}
-                                    <div className={`absolute left-[21px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full ring-4 transition-all duration-500 ${
-                                        i === 0 ? 'bg-emerald-500 ring-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.8)] scale-125' : 'bg-slate-700 ring-slate-800 group-hover:bg-emerald-400'
+                                <div key={version.id} className={`relative pl-20 group ${restoringVersion === version.id ? 'opacity-50 pointer-events-none' : ''}`}>
+                                    <div className={`absolute left-[26px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full ring-8 transition-all duration-700 ${
+                                        i === 0 ? 'bg-blue-500 ring-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.8)] scale-125' : 'bg-slate-700 ring-slate-800'
                                     }`}></div>
 
-                                    <div className="bg-white/5 border border-white/5 rounded-[2rem] p-6 hover:bg-white/[0.08] hover:border-white/10 transition-all group flex items-center justify-between">
-                                        <div>
-                                            <p className="text-white font-black text-lg tracking-tight mb-1">Version {versions.length - i}</p>
-                                            <div className="flex items-center gap-3">
-                                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{new Date(version.timestamp).toLocaleString()}</span>
-                                                <span className="w-1 h-1 bg-slate-700 rounded-full text-slate-500">•</span>
-                                                <span className="text-[10px] font-black text-emerald-500/70 uppercase tracking-widest">{version.node}</span>
-                                            </div>
+                                    <div className="bg-white/5 border border-white/5 rounded-[2.5rem] p-8 hover:bg-white/[0.08] hover:border-white/10 transition-all flex flex-col sm:flex-row items-center justify-between gap-8">
+                                        <div className="text-center sm:text-left">
+                                            <p className="text-white font-black text-xl tracking-tight mb-2 uppercase">Cycle {versions.length - i}</p>
+                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{new Date(version.timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                         </div>
-                                        <div className="text-right">
-                                            <p className="text-white font-black text-sm mb-3">{version.size}</p>
-                                            <button 
-                                                onClick={() => handleRestoreVersion(version.id)}
-                                                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-xl shadow-emerald-600/20 active:scale-95"
-                                            >
-                                                {restoringVersion === version.id ? (
-                                                    <span className="flex items-center gap-2">
-                                                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                                                        Syncing...
-                                                    </span>
-                                                ) : 'Rewind Now'}
-                                            </button>
-                                        </div>
+                                        <button 
+                                            onClick={() => handleRestoreVersion(version.id)}
+                                            className="btn-neural bg-blue-600 hover:bg-blue-500 text-white shadow-2xl shadow-blue-600/20 w-full sm:w-auto"
+                                        >
+                                            {restoringVersion === version.id ? 'SYNCING...' : 'RESTORE'}
+                                        </button>
                                     </div>
-                                    {restoringVersion === version.id && (
-                                        <div className="absolute inset-0 flex items-center justify-center z-10">
-                                            <div className="bg-emerald-600 text-white px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest animate-bounce">
-                                                Restoring Shard Data...
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
                             ))}
                         </div>
                     )}
                 </div>
 
-                <div className="p-10 bg-white/5 border-t border-white/5">
-                    <div className="flex items-center gap-4 text-slate-400">
-                        <svg className="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                        <p className="text-[11px] font-bold uppercase tracking-widest leading-relaxed">
-                            All historical shards are encrypted with your Master Key (AES-256) and sharded via Neural Compression Protocol.
+                <div className="p-12 md:p-14 bg-white/5 border-t border-white/5 backdrop-blur-3xl">
+                    <div className="flex items-start gap-6">
+                        <div className="w-12 h-12 bg-blue-600/20 rounded-2xl flex items-center justify-center text-blue-500">
+                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        </div>
+                        <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] leading-relaxed">
+                           Shards are reassembled using <span className="text-white">Cognitive Parity</span> checks to ensure 100% data integrity before local deployment.
                         </p>
                     </div>
                 </div>
@@ -294,35 +274,35 @@ export function Recovery() {
         </div>
       )}
 
-      {/* Floating Action Bar */}
+      {/* Floating Action Controller */}
       {selectedFiles.length > 0 && !inspectingFile && (
-         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50 w-full max-w-2xl px-6">
-            <div className="glass-dark rounded-[2.5rem] p-4 flex items-center justify-between shadow-2xl shadow-emerald-900/40 border border-white/10 animate-in slide-in-from-bottom-10 duration-700">
-               <div className="flex items-center gap-6 px-4">
-                  <div className="flex -space-x-3">
+         <div className="fixed bottom-24 md:bottom-12 left-0 right-0 z-50 px-8 animate-slide-up">
+            <div className="max-w-3xl mx-auto glass-dark rounded-[3rem] p-4 md:p-6 flex items-center justify-between shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10 border-t-white/20">
+               <div className="flex items-center gap-6 px-6">
+                  <div className="flex -space-x-4">
                      {selectedFiles.slice(0, 3).map((id, i) => (
-                        <div key={id} className="w-10 h-10 rounded-2xl bg-emerald-600 border-2 border-[#0F172A] flex items-center justify-center text-white text-[10px] font-black">
+                        <div key={id} className={`w-12 h-12 rounded-[1.25rem] bg-blue-600 border-4 border-slate-900 flex items-center justify-center text-white text-xs font-black shadow-2xl transform hover:-translate-y-2 transition-transform`}>
                            {i + 1}
                         </div>
                      ))}
+                     {selectedFiles.length > 3 && (
+                        <div className="w-12 h-12 rounded-[1.25rem] bg-slate-800 border-4 border-slate-900 flex items-center justify-center text-slate-400 text-xs font-black">
+                           +{selectedFiles.length - 3}
+                        </div>
+                     )}
                   </div>
                   <div>
-                     <p className="text-white font-black text-sm tracking-tight leading-none mb-1.5">{selectedFiles.length} Shards Targetted</p>
-                     <p className="text-emerald-400 font-bold text-[10px] uppercase tracking-widest">Ready for Local Restore</p>
+                     <p className="text-white font-black text-lg tracking-tighter leading-none mb-1 uppercase">{selectedFiles.length} SHARDS</p>
+                     <p className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">Queued for Deployment</p>
                   </div>
                </div>
-               <div className="flex items-center gap-3">
-                  <button className="flex items-center gap-4 px-8 py-5 bg-emerald-600 text-white rounded-[1.75rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all group font-bold">
-                     Restore Internally
-                     <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                     </svg>
-                  </button>
-               </div>
+               <button className="btn-neural btn-neural-primary !px-12 !py-6 flex items-center gap-4 group">
+                  <span>Restore ALL</span>
+                  <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+               </button>
             </div>
          </div>
       )}
     </div>
   );
 }
-
