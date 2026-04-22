@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import type { StorageStats, BackupItem } from '@/types';
 import { mockApi } from '@/services/mockApi';
 import { neuralEngine } from '@/services/neuralEngine';
-import { NeuralMeshVisualizer } from './NeuralMeshVisualizer';
+import { useToast } from '@/context/ToastContext';
 
 export function Dashboard() {
   const [stats, setStats] = useState<StorageStats | null>(null);
@@ -11,7 +11,7 @@ export function Dashboard() {
   const [showVaultBrowser, setShowVaultBrowser] = useState(false);
   const [showDeviceScanner, setShowDeviceScanner] = useState(false);
   const [deviceFiles, setDeviceFiles] = useState<any[]>([]);
-  const [toast, setToast] = useState<string | null>(null);
+  const { showToast } = useToast();
 
   // Advanced AI States
   const [aiInsights, setAiInsights] = useState<any[]>([]);
@@ -94,12 +94,10 @@ export function Dashboard() {
             </div>
         </div>
         
-        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] text-center md:text-left mb-8 md:mb-14 relative z-10">
+        <h1 className="text-4xl md:text-7xl font-black text-slate-900 tracking-[-0.05em] leading-[0.9] text-center md:text-left mb-8 md:mb-14">
           Neural Mesh<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500">Cognitive Vault.</span>
         </h1>
-        
-        <NeuralMeshVisualizer />
         
         {/* Advanced AI Insight Section */}
          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mb-6">
@@ -421,19 +419,6 @@ export function Dashboard() {
          </div>
       )}
 
-      {/* In-App Toast Notification */}
-      {toast && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] animate-slide-up">
-          <div className="px-8 py-4 bg-emerald-600/95 backdrop-blur-xl text-white rounded-[1.5rem] shadow-2xl flex items-center gap-4 border border-emerald-400/40">
-            <div className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <p className="font-black text-sm tracking-tight">{toast}</p>
-          </div>
-        </div>
-      )}
 
       {/* Side Terminal Peek (Only on Desktop) */}
       <div className="hidden 2xl:block fixed top-1/2 -translate-y-1/2 left-8 w-64 Vault-card p-6 bg-slate-900 text-emerald-400 font-mono text-[9px] border border-slate-800 shadow-2xl opacity-60 hover:opacity-100 transition-opacity">

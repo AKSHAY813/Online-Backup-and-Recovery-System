@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { mockApi } from '@/services/mockApi';
 import type { BackupItem } from '@/types';
+import { useToast } from '@/context/ToastContext';
 
 interface BackupVersion {
   id: string;
@@ -11,6 +12,7 @@ interface BackupVersion {
 }
 
 export function Recovery() {
+  const { showToast } = useToast();
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [backups, setBackups] = useState<BackupItem[]>([]);
@@ -49,10 +51,21 @@ export function Recovery() {
 
   const handleRestoreVersion = (vId: string) => {
     setRestoringVersion(vId);
+    showToast('Reassembling neural shards...', 'info');
     setTimeout(() => {
         setRestoringVersion(null);
         setInspectingFile(null);
+        showToast('Shard reassembly complete! File restored.', 'success');
     }, 2500);
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedFiles.length === 0) return;
+    if (confirm(`Purge ${selectedFiles.length} selected shards from the neural mesh?`)) {
+        setBackups(prev => prev.filter(b => !selectedFiles.includes(b.id)));
+        showToast(`${selectedFiles.length} shards purged from mesh hub!`, 'success');
+        setSelectedFiles([]);
+    }
   };
 
   const toggleFileSelection = (id: string, e: React.MouseEvent) => {
@@ -296,10 +309,25 @@ export function Recovery() {
                      <p className="text-blue-400 font-black text-[9px] uppercase tracking-[0.3em]">Queued for Deployment</p>
                   </div>
                </div>
-               <button className="btn-neural btn-neural-primary !px-12 !py-6 flex items-center gap-4 group">
-                  <span>Restore ALL</span>
-                  <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-               </button>
+               <div className="flex items-center gap-4">
+                  <button 
+                    onClick={handleDeleteSelected}
+                    className="px-6 py-4 bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest transition-all"
+                  >
+                    Purge
+                  </button>
+                  <button 
+                    onClick={() => {
+                        showToast(`Initiating restoration for ${selectedFiles.length} files...`, 'info');
+                        setTimeout(() => showToast('Batch restoration complete!', 'success'), 3000);
+                        setSelectedFiles([]);
+                    }}
+                    className="btn-neural btn-neural-primary !px-12 !py-6 flex items-center gap-4 group"
+                  >
+                    <span>Restore ALL</span>
+                    <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </button>
+               </div>
             </div>
          </div>
       )}

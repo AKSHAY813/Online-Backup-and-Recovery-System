@@ -10,16 +10,18 @@ import { Auth } from '@/components/Auth';
 import { InstallBanner } from '@/components/InstallBanner';
 import { BottomNav } from '@/components/BottomNav';
 import { mockApi } from '@/services/mockApi';
+import { ToastProvider, useToast } from '@/context/ToastContext';
 
-export function App() {
+function AppContent() {
+  const { showToast, history, clearHistory } = useToast();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isNotificationLogOpen, setIsNotificationLogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [settings, setSettings] = useState<any>(null);
-  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('cloudvault_user');
@@ -33,16 +35,6 @@ export function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => setToast(null), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
-
-  const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'success') => {
-    setToast({ message, type });
-  }, []);
 
   const checkAuth = async () => {
     try {
@@ -185,7 +177,6 @@ export function App() {
 
   return (
     <div className="flex min-h-screen bg-[#F8FAFC] relative overflow-hidden selection:bg-blue-600 selection:text-white">
-      <div className="scanline"></div>
       {/* Background Mesh */}
       <div className="absolute inset-0 pointer-events-none z-0">
           <div className="absolute inset-0 bg-grid-pattern opacity-10"></div>
@@ -223,12 +214,19 @@ export function App() {
             </div>
             
             <div className="flex items-center gap-6 md:gap-10">
-              <button className="relative p-3 text-slate-400 hover:text-blue-600 bg-slate-50 border border-slate-100 rounded-2xl transition-all group">
+              <button 
+                onClick={() => setIsNotificationLogOpen(!isNotificationLogOpen)}
+                className={`relative p-3 ${isNotificationLogOpen ? 'text-blue-600 bg-blue-50 border-blue-200' : 'text-slate-400 bg-slate-50 border-slate-100'} hover:text-blue-600 rounded-2xl transition-all group border`}
+              >
                 <svg className="w-6 h-6 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-ping"></span>
-                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                {history.length > 0 && (
+                  <>
+                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full animate-ping"></span>
+                    <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+                  </>
+                )}
               </button>
               <div onClick={() => setIsProfileModalOpen(true)} className="flex items-center gap-4 cursor-pointer group active:scale-95 transition-all">
                 <div className="text-right hidden sm:block">
@@ -244,22 +242,61 @@ export function App() {
         </header>
 
         {/* Global Content Deployment */}
-        <div className="p-6 md:p-14 max-w-7xl mx-auto min-h-[calc(100vh-300px)]">
+        <div className="p-6 md:p-14 max-w-7xl mx-auto min-h-[calc(100vh-300px)] relative">
+           
+           {/* Notification Log Popover */}
+           {isNotificationLogOpen && (
+             <div className="absolute top-0 right-6 md:right-14 z-50 w-full max-w-sm animate-slide-up">
+                <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden">
+                   <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                      <div>
+                         <h3 className="text-lg font-black text-slate-900 tracking-tight uppercase">System Log</h3>
+                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Recent Mesh Activity</p>
+                      </div>
+                      <button 
+                        onClick={() => { clearHistory(); setIsNotificationLogOpen(false); }}
+                        className="text-[9px] font-black text-rose-500 uppercase tracking-widest hover:bg-rose-50 px-3 py-1.5 rounded-lg transition-all"
+                      >
+                         Purge All
+                      </button>
+                   </div>
+                   <div className="max-h-96 overflow-y-auto divide-y divide-slate-100 scrollbar-hide">
+                      {history.length > 0 ? history.map((item) => (
+                        <div key={item.id} className="p-6 flex items-start gap-4 hover:bg-slate-50 transition-all group">
+                           <div className={`w-8 h-8 rounded-xl shrink-0 flex items-center justify-center ${
+                             item.type === 'success' ? 'bg-emerald-50 text-emerald-600' :
+                             item.type === 'error' ? 'bg-rose-50 text-rose-600' :
+                             'bg-blue-50 text-blue-600'
+                           }`}>
+                              {item.type === 'success' ? (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                              ) : (
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                              )}
+                           </div>
+                           <div className="flex-1 min-w-0">
+                              <p className="text-xs font-black text-slate-800 leading-tight mb-1 uppercase tracking-tight line-clamp-2">{item.message}</p>
+                              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
+                                 {new Date(item.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </p>
+                           </div>
+                        </div>
+                      )) : (
+                        <div className="p-14 text-center">
+                           <div className="w-16 h-16 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-slate-200">
+                              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+                           </div>
+                           <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Feed Zero • Static Mesh</p>
+                        </div>
+                      )}
+                   </div>
+                </div>
+             </div>
+           )}
+
            {renderContent()}
         </div>
 
-        {/* Global Shard Alerts (Toasts) */}
-        {toast && (
-          <div className="fixed top-28 left-1/2 -translate-x-1/2 z-[100] animate-slide-up">
-            <div className={`px-10 py-5 rounded-[2rem] shadow-2xl flex items-center gap-5 border backdrop-blur-3xl ${
-              toast.type === 'success' ? 'bg-emerald-600/90 border-emerald-400/50 text-white' :
-              toast.type === 'error' ? 'bg-rose-600/90 border-rose-400/50 text-white' :
-              'bg-slate-900/95 border-slate-700 text-white shadow-blue-500/10'
-            }`}>
-              <span className="font-black text-base tracking-tight uppercase">{toast.message}</span>
-            </div>
-          </div>
-        )}
 
         <footer className="px-10 py-16 border-t border-slate-50 bg-white/40 backdrop-blur-xl mt-20">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 text-[10px] font-black text-slate-300 uppercase tracking-[0.5em] text-center">
@@ -287,5 +324,13 @@ export function App() {
         </div>
       )}
     </div>
+  );
+}
+
+export function App() {
+  return (
+    <ToastProvider>
+      <AppContent />
+    </ToastProvider>
   );
 }

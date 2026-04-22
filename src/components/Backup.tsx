@@ -3,8 +3,10 @@ import { CloudImportModal } from './CloudImportModal';
 import { mockApi } from '@/services/mockApi';
 import { neuralEngine } from '@/services/neuralEngine';
 import type { StorageStats } from '@/types';
+import { useToast } from '@/context/ToastContext';
 
 export function Backup() {
+  const { showToast } = useToast();
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isSharding, setIsSharding] = useState(false);
@@ -81,6 +83,7 @@ export function Backup() {
         setIsUploading(false);
         // Persist the backup in mock storage with shard data
         mockApi.createBackup(files[0].name, totalSize, (files[0] as any).sourceUrl);
+        showToast(`Deployment of ${files[0].name} successful!`, 'success');
       }
     }, 200);
   };
