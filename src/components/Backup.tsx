@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { CloudImportModal } from './CloudImportModal';
 import { mockApi } from '@/services/mockApi';
 import { neuralEngine } from '@/services/neuralEngine';
@@ -15,27 +15,43 @@ export function Backup() {
   const [showCloudModal, setShowCloudModal] = useState(false);
   const [showSummaryDetails, setShowSummaryDetails] = useState(false);
   const [scannedFiles, setScannedFiles] = useState<any[]>([]);
+  const [recentBackups, setRecentBackups] = useState<any[]>([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [stats, setStats] = useState<StorageStats | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const formatStorage = (gb: number | undefined) => gb ? (gb >= 1000 ? `${(gb / 1024).toFixed(1)} TB` : `${gb} GB`) : '0 GB';
 
+  const [isScanning, setIsScanning] = useState(false);
+
+  const fetchBackups = useCallback(async () => {
+    setIsScanning(true);
+    try {
+      const data = await mockApi.getDashboardData();
+      setStats(data.stats);
+      
+      const systemFiles = await (mockApi as any).getSystemFiles(activeCategory);
+      setRecentBackups(systemFiles);
+      
+      // Simulate scanning time
+      await new Promise(r => setTimeout(r, 600));
+    } catch (error) {
+      console.error('Failed to fetch backups:', error);
+    } finally {
+      setIsScanning(false);
+    }
+  }, [activeCategory]);
+
   useEffect(() => {
-    mockApi.getDashboardData().then(data => setStats(data.stats));
+    fetchBackups();
     
-    // Generate dynamic files for different categories
-    const mockFiles = [
-      { name: 'Wedding_Video.mp4', size: '1.2 GB', category: 'video', date: '2025-01-10' },
-      { name: 'Research_Paper.pdf', size: '2.4 MB', category: 'document', date: '2025-02-15' },
-      { name: 'Presentation.pptx', size: '15.8 MB', category: 'document', date: '2025-03-01' },
-      { name: 'Profile_Picture.png', size: '4.2 MB', category: 'desktop', date: '2025-03-20' },
-      { name: 'Setup_Wizard.exe', size: '45.1 MB', category: 'download', date: '2024-12-05' },
-      { name: 'Holiday_Movie.mkv', size: '4.5 GB', category: 'video', date: '2025-01-22' },
-      { name: 'Invoice_001.xlsx', size: '1.1 MB', category: 'document', date: '2025-03-25' },
-    ];
-    setScannedFiles(mockFiles);
-  }, []);
+    // Auto-sync neural mesh every 10 seconds to detect system changes
+    const syncInterval = setInterval(() => {
+      fetchBackups();
+    }, 10000);
+
+    return () => clearInterval(syncInterval);
+  }, [fetchBackups, activeCategory]);
 
   const handleCloudImport = (files: File[]) => {
     if (files && files.length > 0) {
@@ -62,7 +78,9 @@ export function Backup() {
     // Phase 2: Mesh Deployment (Upload)
     setIsUploading(true);
     setProgress(0);
-    const totalSize = files.reduce((acc, f) => acc + f.size, 0);
+    
+    // Support simulatedSize from system asset objects
+    const totalSize = files.reduce((acc, f) => acc + ( (f as any).simulatedSize ? parseSizeToBytes((f as any).simulatedSize) : f.size ), 0);
     const totalSizeGB = (totalSize / (1024 * 1024 * 1024)).toFixed(2);
     
     let uploaded = 0;
@@ -82,11 +100,60 @@ export function Backup() {
         clearInterval(interval);
         setIsUploading(false);
         // Persist the backup in mock storage with shard data
-        mockApi.createBackup(files[0].name, totalSize, (files[0] as any).sourceUrl);
-        showToast(`Deployment of ${files[0].name} successful!`, 'success');
+        mockApi.createBackup(files[0].name, totalSize, (files[0] as any).sourceUrl)
+          .then(() => {
+            fetchBackups();
+            showToast(`Deployment of ${files[0].name} successful!`, 'success');
+          })
+          .catch(err => {
+            console.error('Backup creation failed:', err);
+            showToast('Failed to finalize backup deployment', 'error');
+          });
       }
     }, 200);
   };
+
+  const parseSizeToBytes = (sizeStr: string) => {
+    const val = parseFloat(sizeStr);
+    if (sizeStr.includes('GB')) return val * 1024 * 1024 * 1024;
+    if (sizeStr.includes('MB')) return val * 1024 * 1024;
+    if (sizeStr.includes('KB')) return val * 1024;
+    return val;
+  };
+
+  const handleDownload = async (item: any) => {
+    showToast(`Initializing secure download: ${item.name}`, 'info');
+    setIsSyncingGlobal(true);
+    
+    try {
+      await mockApi.restoreBackup(item.id);
+      setTimeout(() => {
+         setIsSyncingGlobal(false);
+         showToast(`Download complete: ${item.name}`, 'success');
+         fetchBackups();
+      }, 2000);
+    } catch (error) {
+      console.error('Restore failed:', error);
+      setIsSyncingGlobal(false);
+      showToast('Failed to initiate restore protocol', 'error');
+    }
+  };
+
+  const handleDelete = async (item: any) => {
+    if (confirm(`Are you sure you want to purge ${item.name} from the neural mesh? This cannot be undone.`)) {
+      try {
+        await mockApi.deleteBackup(item.id);
+        showToast(`${item.name} purged successfully`, 'success');
+        fetchBackups();
+      } catch (error) {
+        console.error('Delete failed:', error);
+        showToast('Failed to purge shard', 'error');
+      }
+    }
+  };
+
+  // Add this to handle the syncing state if we want it global
+  const [isSyncingGlobal, setIsSyncingGlobal] = useState(false);
 
 
   return (
@@ -241,14 +308,14 @@ export function Backup() {
       </div>
 
       {/* Categorized Assets */}
-      <div className="Vault-card overflow-hidden">
+      <div className="Vault-card overflow-hidden relative">
         <div className="px-8 md:px-14 py-10 md:py-14 border-b border-slate-100 flex flex-col md:flex-row items-start md:items-center justify-between bg-slate-50/50 gap-10">
            <div>
-              <h3 className="text-2xl md:text-4xl font-black text-slate-900 tracking-[-0.05em] uppercase">Detected Shards</h3>
-              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3 uppercase">Neural Scan Results</p>
+              <h3 className="text-2xl md:text-4xl font-black text-slate-900 tracking-[-0.05em] uppercase">Neural Archives</h3>
+              <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em] mt-3 uppercase">Real-time Shards & System Assets</p>
            </div>
            <div className="flex gap-3 overflow-x-auto w-full md:w-auto pb-4 md:pb-0 scrollbar-hide">
-              {['all', 'video', 'document', 'download'].map(cat => (
+              {['all', 'live', 'video', 'document', 'download'].map(cat => (
                 <button 
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
@@ -263,45 +330,90 @@ export function Backup() {
               ))}
            </div>
         </div>
-        <div className="divide-y divide-slate-100">
-           {scannedFiles.filter(item => activeCategory === 'all' || item.category === activeCategory).map((item, i) => (
-             <div key={i} className="px-8 md:px-14 py-8 md:py-12 flex flex-col sm:flex-row items-start sm:items-center justify-between group hover:bg-blue-50/30 transition-all gap-8">
-                <div className="flex items-center gap-8">
-                   <div className={`w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center shadow-lg shrink-0 ${
-                      item.category === 'video' ? 'bg-blue-50 text-blue-600' :
-                      item.category === 'document' ? 'bg-emerald-50 text-emerald-600' :
-                      item.category === 'download' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
-                   } group-hover:scale-110 transition-transform duration-500`}>
-                      {item.category === 'video' ? (
-                        <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                      ) : (
-                        <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                      )}
+
+        <div className="relative min-h-[400px]">
+           {isScanning && (
+              <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-md flex flex-col items-center justify-center animate-fade-in">
+                 <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-6"></div>
+                 <p className="text-blue-600 font-black text-[10px] uppercase tracking-[0.4em] animate-pulse">Syncing Neural Mesh...</p>
+              </div>
+           )}
+
+           <div className={`divide-y divide-slate-100 transition-all duration-500 ${isScanning ? 'opacity-20 blur-sm scale-[0.98]' : 'opacity-100'}`}>
+              {recentBackups.length > 0 ? (
+                recentBackups.map((item) => (
+                  <div key={item.id} className="px-8 md:px-14 py-8 md:py-12 flex flex-col lg:flex-row items-start lg:items-center justify-between group hover:bg-blue-50/30 transition-all gap-8">
+                     <div className="flex items-center gap-8 w-full">
+                        <div className={`w-16 h-16 md:w-20 md:h-20 rounded-[1.5rem] md:rounded-[2rem] flex items-center justify-center shadow-2xl shrink-0 group-hover:scale-110 transition-transform duration-500 ${
+                           item.lastBackup === '-' ? 'bg-slate-100 text-slate-400' : 'bg-slate-900 text-blue-400'
+                        }`}>
+                           {item.type === 'video' ? (
+                             <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                           ) : item.type === 'document' || item.name.endsWith('.pdf') ? (
+                             <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                           ) : (
+                             <svg className="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                           )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                           <div className="flex items-center gap-3 mb-2">
+                              <p className="font-black text-slate-900 text-lg md:text-2xl leading-none tracking-tighter uppercase group-hover:text-blue-600 transition-colors truncate">{item.name}</p>
+                              {item.lastBackup !== '-' ? (
+                                <span className="px-2 py-0.5 bg-blue-100 text-blue-600 text-[8px] font-black rounded uppercase tracking-widest">LIVE MESH</span>
+                              ) : (
+                                <span className="px-2 py-0.5 bg-slate-100 text-slate-500 text-[8px] font-black rounded uppercase tracking-widest">LOCAL ASSET</span>
+                              )}
+                              {item.isRestored && <span className="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black rounded uppercase tracking-widest">SYNCED</span>}
+                           </div>
+                           <div className="flex flex-wrap items-center gap-4">
+                              <span className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">{item.type || 'Binary'}</span>
+                              <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
+                              <span className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">
+                                 {item.lastBackup === '-' ? 'Local Asset' : `Mesh Sync: ${new Date(item.lastBackup).toLocaleDateString()}`}
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="flex items-center justify-between w-full lg:w-auto gap-6 md:gap-10">
+                        <p className="text-xl md:text-3xl font-black text-slate-900 tabular-nums tracking-tighter uppercase">{item.size}</p>
+                        <div className="flex items-center gap-3">
+                           {item.lastBackup === '-' ? (
+                             <button 
+                               onClick={() => startSimulatedUpload([new File([], item.name)])}
+                               className="btn-neural btn-neural-primary !px-8 !py-4 transition-all uppercase flex items-center gap-3"
+                             >
+                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                               Deploy
+                             </button>
+                           ) : (
+                             <button 
+                               onClick={() => handleDownload(item)}
+                               className="btn-neural bg-slate-100 text-slate-900 hover:bg-blue-600 hover:text-white !px-8 !py-4 transition-all uppercase flex items-center gap-3"
+                             >
+                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                               {item.isRestored ? 'Restored' : 'Restore'}
+                             </button>
+                           )}
+                           <button 
+                             onClick={() => handleDelete(item)}
+                             className="p-4 bg-rose-50 text-rose-500 hover:bg-rose-600 hover:text-white rounded-2xl transition-all border border-rose-100"
+                             title="Purge Shard"
+                           >
+                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+                ))
+              ) : (
+                <div className="py-32 text-center">
+                   <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                    </div>
-                   <div>
-                      <p className="font-black text-slate-900 text-lg md:text-2xl leading-none tracking-tighter mb-3 uppercase group-hover:text-blue-600 transition-colors">{item.name}</p>
-                      <div className="flex items-center gap-4">
-                         <span className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">{item.category}</span>
-                         <span className="w-1.5 h-1.5 bg-blue-100 rounded-full"></span>
-                         <span className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest">{item.date}</span>
-                      </div>
-                   </div>
+                   <p className="text-slate-400 font-black text-xs uppercase tracking-widest uppercase">No assets detected in this node</p>
                 </div>
-                <div className="flex items-center justify-between w-full sm:w-auto gap-10">
-                   <p className="text-xl md:text-3xl font-black text-slate-900 tabular-nums tracking-tighter uppercase">{item.size}</p>
-                   <button 
-                     onClick={() => {
-                        const file = new File([""], item.name, { type: "text/plain" });
-                        (file as any).simulatedSize = item.size;
-                        startSimulatedUpload([file]);
-                     }}
-                     className="btn-neural btn-neural-primary !px-8 !py-4 transition-all uppercase"
-                   >
-                     Deploy
-                   </button>
-                </div>
-             </div>
-           ))}
+              )}
+           </div>
         </div>
       </div>
       
@@ -310,6 +422,18 @@ export function Backup() {
         onClose={() => setShowCloudModal(false)}
         onImport={handleCloudImport}
       />
+      
+      {isSyncingGlobal && (
+        <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-2xl flex items-center justify-center animate-fade-in">
+          <div className="bg-white p-14 rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] flex flex-col items-center gap-10 border border-slate-100 max-w-md w-full mx-10">
+            <div className="w-24 h-24 border-[8px] border-slate-50 border-t-blue-600 rounded-full animate-spin shadow-inner"></div>
+            <div className="text-center">
+              <p className="text-4xl font-black text-slate-900 tracking-tighter uppercase leading-none mb-3">Syncing Mesh</p>
+              <p className="text-[11px] font-black text-blue-500 uppercase tracking-[0.4em] uppercase">Relaying Shards to Hub</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

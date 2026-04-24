@@ -1,12 +1,18 @@
 export interface BackupItem {
   id: string;
   name: string;
-  type: 'file' | 'folder' | 'system' | 'web';
+  type: 'file' | 'folder' | 'system' | 'web' | 'image' | 'video' | 'document' | 'other';
   size: string;
   lastBackup: string;
   status: 'completed' | 'pending' | 'in-progress' | 'failed';
   versions: number;
   url?: string;
+  isRestored?: boolean;
+  restoredAt?: string;
+  isVaulted?: boolean;
+  vaultPasskey?: string;
+  failedAttempts?: number;
+  lockoutUntil?: string;
 }
 
 export interface BackupSchedule {
